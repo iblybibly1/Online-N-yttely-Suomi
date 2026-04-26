@@ -7,9 +7,17 @@
 
   var _cache = null;
 
+  function getDataUrl() {
+    // Build absolute URL so <base href> doesn't interfere with fetch resolution
+    var origin = window.location.origin;
+    var path = window.location.pathname;
+    var dir = path.substring(0, path.lastIndexOf('/') + 1);
+    return origin + dir + 'data/competitions.json';
+  }
+
   async function fetchData() {
     if (_cache) return _cache;
-    const res = await fetch('data/competitions.json');
+    const res = await fetch(getDataUrl());
     if (!res.ok) throw new Error('Failed to load competition data');
     _cache = await res.json();
     return _cache;
