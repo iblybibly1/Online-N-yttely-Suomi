@@ -109,9 +109,9 @@
               Proceed to payment →
             </button>
 
-            <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px">
-              Card payments processed securely by Stripe. After paying, email your entry details to
-              <a href="mailto:info@nattelysuomi.fi">info@nattelysuomi.fi</a>
+            <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:12px">
+              💡 Entry details and photos are submitted via the entry form on each class page.<br>
+              Payment completes your registration.
             </p>
 
             <p style="font-size:12px;color:var(--text-subtle);text-align:center;margin-top:12px">
@@ -247,14 +247,17 @@
       }
 
       var method = document.querySelector('input[name="paymentMethod"]:checked').value;
-
       if (method === 'mobilepay') {
         window.location.href = 'mobilepay.html';
         return;
       }
-
-      // Card payment: redirect to Stripe Payment Link
-      // User pays there, amount matches their cart total
+      // Card payment
+      if (STRIPE_PAYMENT_LINK.indexOf('YOUR_LINK_HERE') !== -1) {
+        var errEl = document.getElementById('checkoutError');
+        errEl.textContent = 'Card payment is not yet configured. Please use MobilePay or email info@nattelysuomi.fi to arrange payment.';
+        errEl.style.display = 'block';
+        return;
+      }
       window.location.href = STRIPE_PAYMENT_LINK;
     });
 

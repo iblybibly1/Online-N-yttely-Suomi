@@ -17,14 +17,12 @@
 
   function highlightActiveLink() {
     var path = window.location.pathname;
+    // Get just the filename from the path (e.g. "/Online-N-yttely-Suomi/competitions.html" → "competitions.html")
+    var currentFile = path.split('/').pop() || 'index.html';
     var links = document.querySelectorAll('.nav-link');
     links.forEach(function (link) {
-      var href = link.getAttribute('href') || '';
-      var normPath = path.replace(/\/$/, '') || '/';
-      var normHref = href.replace(/\/$/, '') || '/';
-      if (normHref !== '/' && normPath.indexOf(normHref) === 0) {
-        link.classList.add('active');
-      } else if (normHref === '/' && (normPath === '/' || normPath === '')) {
+      var href = (link.getAttribute('href') || '').split('/').pop().split('?')[0];
+      if (href && href === currentFile) {
         link.classList.add('active');
       } else {
         link.classList.remove('active');

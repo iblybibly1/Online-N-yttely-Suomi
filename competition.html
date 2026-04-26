@@ -46,60 +46,6 @@
     <div id="drawerFooter" style="padding:20px;border-top:1px solid var(--border)"></div>
   </div>
 
-  <!-- ENTRY MODAL -->
-  <div id="entryModalOverlay" class="modal-overlay" style="display:none">
-    <div class="modal" id="entryModal">
-      <button onclick="closeModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-muted)">✕</button>
-      <h2 style="font-size:20px;font-weight:800;margin-bottom:4px" id="modalTitle">Enter class</h2>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px" id="modalSubtitle"></p>
-
-      <form id="entryForm" style="display:flex;flex-direction:column;gap:16px">
-        <div class="field">
-          <label class="label" for="riderName">Rider name *</label>
-          <input class="input" type="text" id="riderName" placeholder="Your full name" required>
-        </div>
-        <div class="field">
-          <label class="label" for="horseName">Horse name *</label>
-          <input class="input" type="text" id="horseName" placeholder="Horse or pony name" required>
-        </div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
-          <div class="field">
-            <label class="label" for="horseAge">Horse age *</label>
-            <input class="input" type="number" id="horseAge" placeholder="e.g. 7" min="0" max="40" required>
-          </div>
-          <div class="field">
-            <label class="label" for="phone">Phone number *</label>
-            <input class="input" type="tel" id="phone" placeholder="+358 40 000 0000" required>
-          </div>
-        </div>
-        <div class="field">
-          <label class="label" for="address">Postal address *</label>
-          <input class="input" type="text" id="address" placeholder="Street, City, Country" required>
-        </div>
-        <div class="field">
-          <label class="label">Entry photo * (max 10 MB)</label>
-          <div class="drop-zone" id="dropZone">
-            <input type="file" id="photoInput" accept="image/*">
-            <div id="dropZoneInner">
-              <div style="font-size:32px;margin-bottom:8px">📷</div>
-              <div style="font-weight:600;font-size:14px;color:var(--text)">Drop photo here or click to upload</div>
-              <div style="font-size:12px;color:var(--text-muted);margin-top:4px">JPG, PNG, WEBP — max 10 MB</div>
-            </div>
-            <img id="photoPreview" class="drop-zone-preview" style="display:none" alt="Preview">
-          </div>
-          <div id="photoError" style="font-size:12px;color:#dc2626;display:none"></div>
-        </div>
-
-        <div style="background:var(--brand-pale);border:1px solid #bbf7d0;border-radius:var(--r-sm);padding:14px;font-size:13px;color:var(--brand)">
-          <strong>Entry fee: €5.00</strong> — added to your cart. Pay securely at checkout.
-        </div>
-
-        <div id="formError" style="font-size:13px;color:#dc2626;display:none"></div>
-        <button type="submit" class="btn btn-primary btn-full" style="padding:13px">Add to cart 🛒</button>
-      </form>
-    </div>
-  </div>
-
   <main>
     <div class="page" style="padding-top:40px;padding-bottom:80px">
       <div id="pageContent">
@@ -152,9 +98,20 @@
   <script src="js/cart.js"></script>
   <script src="js/nav.js"></script>
   <script>
-    var _activeClass = null;
-    var _activeComp  = null;
-    var _photoData   = null;
+    // Configurable Tally form URL — user should replace with their own Tally.so form URL
+    // Create a free form at https://tally.so with fields: Rider name, Horse name, Horse age, Phone, Address, Photo upload
+    var TALLY_FORM_URL = 'https://tally.so/r/REPLACE_WITH_YOUR_FORM_ID';
+
+    function openEntry(comp, cls) {
+      // Build Tally URL with pre-filled hidden fields
+      var params = new URLSearchParams({
+        competition: comp.name,
+        class: cls.name,
+        price: '€5.00'
+      });
+      var url = TALLY_FORM_URL + '?' + params.toString();
+      window.open(url, '_blank');
+    }
 
     function esc(str) {
       return String(str || '')
@@ -163,108 +120,6 @@
         .replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;');
     }
-
-    function openModal(comp, cls) {
-      _activeComp  = comp;
-      _activeClass = cls;
-      _photoData   = null;
-      document.getElementById('modalTitle').textContent    = 'Enter: ' + cls.name;
-      document.getElementById('modalSubtitle').textContent = comp.name + ' · €5.00';
-      document.getElementById('entryForm').reset();
-      document.getElementById('photoPreview').style.display  = 'none';
-      document.getElementById('dropZoneInner').style.display = 'block';
-      document.getElementById('photoError').style.display    = 'none';
-      document.getElementById('formError').style.display     = 'none';
-      document.getElementById('entryModalOverlay').style.display = 'flex';
-      document.body.style.overflow = 'hidden';
-    }
-
-    function closeModal() {
-      document.getElementById('entryModalOverlay').style.display = 'none';
-      document.body.style.overflow = '';
-      _activeClass = null;
-      _activeComp  = null;
-      _photoData   = null;
-    }
-
-    function handleFile(file) {
-      var errEl = document.getElementById('photoError');
-      errEl.style.display = 'none';
-      if (!file) return;
-      if (file.size > 10 * 1024 * 1024) {
-        errEl.textContent = 'File is too large. Maximum size is 10 MB.';
-        errEl.style.display = 'block';
-        return;
-      }
-      var reader = new FileReader();
-      reader.onload = function (e) {
-        _photoData = e.target.result;
-        var preview = document.getElementById('photoPreview');
-        preview.src = _photoData;
-        preview.style.display = 'block';
-        document.getElementById('dropZoneInner').style.display = 'none';
-      };
-      reader.readAsDataURL(file);
-    }
-
-    document.addEventListener('DOMContentLoaded', function () {
-      var photoInput = document.getElementById('photoInput');
-      if (photoInput) {
-        photoInput.addEventListener('change', function () { handleFile(this.files[0]); });
-      }
-
-      var dz = document.getElementById('dropZone');
-      if (dz) {
-        dz.addEventListener('dragover', function (e) { e.preventDefault(); dz.classList.add('drag-over'); });
-        dz.addEventListener('dragleave', function ()  { dz.classList.remove('drag-over'); });
-        dz.addEventListener('drop', function (e) {
-          e.preventDefault();
-          dz.classList.remove('drag-over');
-          var file = e.dataTransfer.files[0];
-          if (file) handleFile(file);
-        });
-      }
-
-      var form = document.getElementById('entryForm');
-      if (form) {
-        form.addEventListener('submit', function (e) {
-          e.preventDefault();
-          var errEl = document.getElementById('formError');
-          errEl.style.display = 'none';
-          if (!_photoData) {
-            errEl.textContent = 'Please upload an entry photo.';
-            errEl.style.display = 'block';
-            return;
-          }
-          Cart.addItem({
-            competitionId:   _activeComp.id,
-            competitionName: _activeComp.name,
-            classId:         _activeClass.id,
-            className:       _activeClass.name,
-            riderName:       document.getElementById('riderName').value.trim(),
-            horseName:       document.getElementById('horseName').value.trim(),
-            horseAge:        document.getElementById('horseAge').value.trim(),
-            phone:           document.getElementById('phone').value.trim(),
-            address:         document.getElementById('address').value.trim(),
-            photoData:       _photoData,
-            priceEur:        5
-          });
-          closeModal();
-          Cart.openDrawer();
-        });
-      }
-
-      var overlay = document.getElementById('entryModalOverlay');
-      if (overlay) {
-        overlay.addEventListener('click', function (e) {
-          if (e.target === overlay) closeModal();
-        });
-      }
-
-      document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape') closeModal();
-      });
-    });
 
     // Load competition
     (async function () {
@@ -298,7 +153,9 @@
           if (comp.status === 'open') {
             var compJson = JSON.stringify(comp).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
             var clsJson  = JSON.stringify(cls).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-            actionHtml = '<button class="btn btn-primary btn-full" onclick="openModal(' + compJson + ',' + clsJson + ')">Enter this class →</button>';
+            actionHtml =
+              '<button class="btn btn-primary btn-full" onclick="openEntry(' + compJson + ',' + clsJson + ')">Enter this class →</button>' +
+              '<p style="font-size:11px;color:var(--text-subtle);margin-top:8px;text-align:center">Form opens in new tab · photo upload included</p>';
           } else if (comp.status === 'completed') {
             var winnerHtml = cls.winner
               ? '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:10px 12px;background:var(--brand-pale);border-radius:var(--r-sm)">' +
@@ -346,7 +203,6 @@
           '<div class="grid-3">' + classesHtml + '</div>';
 
       } catch (err) {
-        console.error('Failed to load competition:', err);
         content.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><h2>Failed to load</h2><p>Please refresh the page.</p></div>';
       }
     })();
