@@ -1,0 +1,217 @@
+{
+  "competitions": [
+    {
+      "id": "spring-open-2026",
+      "name": "Spring Open Show 2026",
+      "date": "May 1–31, 2026",
+      "closingDate": "2026-05-31",
+      "description": "Our flagship spring show welcoming all breeds and disciplines. Licensed judges, real rosettes posted worldwide, and a prize pool for top placements.",
+      "status": "open",
+      "banner": "/images/hero-horse.jpg",
+      "classes": [
+        {
+          "id": "best-solid-colour",
+          "name": "Best Solid Colour Horse",
+          "description": "Open to any solid-coloured horse or pony. One clear, unedited photo showing the horse standing square.",
+          "folder": "/images/competitions/spring-open-2026/best-solid-colour/",
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-palomino-dun-grey",
+          "name": "Best Palomino / Dun / Grey",
+          "description": "For palomino, dun, buckskin, grey, and roan horses. Show off that colour!",
+          "folder": "/images/competitions/spring-open-2026/best-palomino-dun-grey/",
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-mare",
+          "name": "Best Mare",
+          "description": "Open to mares of any breed and age. Conformation photo required.",
+          "folder": "/images/competitions/spring-open-2026/best-mare/",
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-stallion-gelding",
+          "name": "Best Stallion / Gelding",
+          "description": "Open to stallions and geldings of any breed and age.",
+          "folder": "/images/competitions/spring-open-2026/best-stallion-gelding/",
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-youngstock",
+          "name": "Best Youngstock (Under 4)",
+          "description": "For foals, yearlings, and horses aged 2–3. In-hand or loose in paddock.",
+          "folder": "/images/competitions/spring-open-2026/best-youngstock/",
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-veteran",
+          "name": "Best Veteran (15+)",
+          "description": "Celebrating our senior horses, 15 years and over.",
+          "folder": "/images/competitions/spring-open-2026/best-veteran/",
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-ridden",
+          "name": "Best Ridden Horse",
+          "description": "Show your horse under saddle. Any discipline welcome.",
+          "folder": "/images/competitions/spring-open-2026/best-ridden/",
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-native",
+          "name": "Best Native / Mountain & Moorland",
+          "description": "For native breeds shown in their natural coat.",
+          "folder": "/images/competitions/spring-open-2026/best-native/",
+          "winner": null,
+          "entries": []
+        }
+      ]
+    },
+    {
+      "id": "working-hunter-spring-2026",
+      "name": "Working Hunter Spring Series 2026",
+      "date": "May 15–31, 2026",
+      "closingDate": "2026-05-31",
+      "description": "Round 1 of our Working Hunter series. Submit a photo of your horse jumping a natural fence.",
+      "status": "open",
+      "banner": "/images/hero-horse.jpg",
+      "classes": [
+        {
+          "id": "wh-novice",
+          "name": "Novice Working Hunter",
+          "description": "Fences up to 60 cm. Open to all horses and ponies.",
+          "folder": "/images/competitions/working-hunter-spring-2026/wh-novice/",
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "wh-open",
+          "name": "Open Working Hunter",
+          "description": "Fences 70–90 cm. Experienced combinations welcome.",
+          "folder": "/images/competitions/working-hunter-spring-2026/wh-open/",
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "wh-pony",
+          "name": "Pony Working Hunter",
+          "description": "For ponies 148 cm and under. Fences up to 70 cm.",
+          "folder": "/images/competitions/working-hunter-spring-2026/wh-pony/",
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "wh-showmanship",
+          "name": "In-Hand Showmanship",
+          "description": "Judged on presentation, handler skill, and horse presence.",
+          "folder": "/images/competitions/working-hunter-spring-2026/wh-showmanship/",
+          "winner": null,
+          "entries": []
+        }
+      ]
+    },
+    {
+      "id": "summer-classic-2026",
+      "name": "Summer Classic 2026",
+      "date": "June 1–30, 2026",
+      "closingDate": "2026-06-15",
+      "description": "Our biggest show of the summer. All breeds, all disciplines. Special prizes for Supreme Champion.",
+      "status": "upcoming",
+      "banner": "/images/hero-horse.jpg",
+      "classes": [
+        {
+          "id": "supreme-champion",
+          "name": "Supreme Champion",
+          "description": "The winner of each open class may be entered for Supreme Champion.",
+          "folder": "/images/competitions/summer-classic-2026/supreme-champion/",
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-turnout",
+          "name": "Best Turnout",
+          "description": "Judged on rider and horse presentation.",
+          "folder": "/images/competitions/summer-classic-2026/best-turnout/",
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "dressage-prelim",
+          "name": "Dressage — Preliminary",
+          "description": "Submit a 2-minute video of your preliminary dressage test.",
+          "folder": "/images/competitions/summer-classic-2026/dressage-prelim/",
+          "winner": null,
+          "entries": []
+        }
+      ]
+    },
+    {
+      "id": "winter-championship-2025",
+      "name": "Winter Championship 2025",
+      "date": "December 1–31, 2025",
+      "closingDate": "2025-12-15",
+      "description": "Our inaugural online championship. Congratulations to all who placed!",
+      "status": "completed",
+      "banner": "/images/hero-horse.jpg",
+      "classes": [
+        {
+          "id": "wc-best-stallion",
+          "name": "Best Stallion",
+          "description": "Open to stallions of any breed.",
+          "folder": "/images/competitions/winter-championship-2025/best-stallion/",
+          "winner": "winner.jpg",
+          "entries": ["entry1.jpg", "entry2.jpg", "entry3.jpg", "entry4.jpg"]
+        },
+        {
+          "id": "wc-best-mare",
+          "name": "Best Mare",
+          "description": "Open to mares of any breed.",
+          "folder": "/images/competitions/winter-championship-2025/best-mare/",
+          "winner": "winner.jpg",
+          "entries": ["entry1.jpg", "entry2.jpg", "entry3.jpg"]
+        },
+        {
+          "id": "wc-best-colour",
+          "name": "Best Colour",
+          "description": "Any striking or unusual colour.",
+          "folder": "/images/competitions/winter-championship-2025/best-colour/",
+          "winner": "winner.jpg",
+          "entries": ["entry1.jpg", "entry2.jpg"]
+        }
+      ]
+    }
+  ],
+  "slideshow": [
+    "/images/hero-horse.jpg",
+    "/images/hero-horse.jpg",
+    "/images/hero-horse.jpg"
+  ],
+  "sponsors": [
+    {
+      "name": "EquiSupplies Finland",
+      "logo": "/images/sponsors/equisupplies.png",
+      "website": "#",
+      "tier": "gold"
+    },
+    {
+      "name": "HorseCare Pro",
+      "logo": "/images/sponsors/horsecare.png",
+      "website": "#",
+      "tier": "silver"
+    },
+    {
+      "name": "Stable Solutions",
+      "logo": "/images/sponsors/stable-solutions.png",
+      "website": "#",
+      "tier": "bronze"
+    }
+  ]
+}

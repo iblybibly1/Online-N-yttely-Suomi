@@ -1,0 +1,12 @@
+{
+  "name": "nattely-suomi",
+  "version": "1.0.0",
+  "description": "Finland's online horse show platform",
+  "engines": {
+    "node": "20.x"
+  },
+  "dependencies": {
+    "stripe": "^14.0.0",
+    "resend": "^3.0.0"
+  }
+}

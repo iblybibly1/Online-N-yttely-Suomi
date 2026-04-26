@@ -1,0 +1,354 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Competition — Nättely Suomi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="nav" id="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo"><span>🐴</span><span>Nättely Suomi</span></a>
+      <nav class="nav-links">
+        <a href="/competitions.html" class="nav-link">Shows</a>
+        <a href="/about.html" class="nav-link">How it works</a>
+        <a href="/sponsors.html" class="nav-link">Sponsors</a>
+        <a href="/faq.html" class="nav-link">FAQ</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="cart-btn" id="cartBtn" aria-label="Cart">
+          🛒<span class="cart-count" id="cartCount" style="display:none">0</span>
+        </button>
+        <a href="/competitions.html" class="btn btn-primary btn-sm">Enter a show</a>
+        <button class="btn btn-sm" id="menuBtn" style="display:none">☰</button>
+      </div>
+    </div>
+    <div id="mobileMenu" style="display:none; padding:12px 24px; border-top:1px solid var(--border); background:white">
+      <a href="/competitions.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">Shows</a>
+      <a href="/about.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">How it works</a>
+    </div>
+  </header>
+
+  <!-- CART DRAWER -->
+  <div class="drawer-overlay" id="drawerOverlay" style="display:none" onclick="Cart.closeDrawer()"></div>
+  <div class="drawer" id="cartDrawer">
+    <div style="padding:24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-weight:700;font-size:18px">Cart</span>
+      <button onclick="Cart.closeDrawer()" style="background:none;border:none;cursor:pointer;font-size:20px">✕</button>
+    </div>
+    <div id="drawerItems" style="flex:1;overflow-y:auto;padding:16px"></div>
+    <div id="drawerFooter" style="padding:20px;border-top:1px solid var(--border)"></div>
+  </div>
+
+  <!-- ENTRY MODAL -->
+  <div id="entryModalOverlay" class="modal-overlay" style="display:none">
+    <div class="modal" id="entryModal">
+      <button onclick="closeModal()" style="position:absolute;top:16px;right:16px;background:none;border:none;cursor:pointer;font-size:20px;color:var(--text-muted)">✕</button>
+      <h2 style="font-size:20px;font-weight:800;margin-bottom:4px" id="modalTitle">Enter class</h2>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:24px" id="modalSubtitle"></p>
+
+      <form id="entryForm" style="display:flex;flex-direction:column;gap:16px">
+        <div class="field">
+          <label class="label" for="riderName">Rider name *</label>
+          <input class="input" type="text" id="riderName" placeholder="Your full name" required>
+        </div>
+        <div class="field">
+          <label class="label" for="horseName">Horse name *</label>
+          <input class="input" type="text" id="horseName" placeholder="Horse or pony name" required>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+          <div class="field">
+            <label class="label" for="horseAge">Horse age *</label>
+            <input class="input" type="number" id="horseAge" placeholder="e.g. 7" min="0" max="40" required>
+          </div>
+          <div class="field">
+            <label class="label" for="phone">Phone number *</label>
+            <input class="input" type="tel" id="phone" placeholder="+358 40 000 0000" required>
+          </div>
+        </div>
+        <div class="field">
+          <label class="label" for="address">Postal address *</label>
+          <input class="input" type="text" id="address" placeholder="Street, City, Country" required>
+        </div>
+        <div class="field">
+          <label class="label">Entry photo * (max 10 MB)</label>
+          <div class="drop-zone" id="dropZone">
+            <input type="file" id="photoInput" accept="image/*">
+            <div id="dropZoneInner">
+              <div style="font-size:32px;margin-bottom:8px">📷</div>
+              <div style="font-weight:600;font-size:14px;color:var(--text)">Drop photo here or click to upload</div>
+              <div style="font-size:12px;color:var(--text-muted);margin-top:4px">JPG, PNG, WEBP — max 10 MB</div>
+            </div>
+            <img id="photoPreview" class="drop-zone-preview" style="display:none" alt="Preview">
+          </div>
+          <div id="photoError" style="font-size:12px;color:#dc2626;display:none"></div>
+        </div>
+
+        <div style="background:var(--brand-pale);border:1px solid #bbf7d0;border-radius:var(--r-sm);padding:14px;font-size:13px;color:var(--brand)">
+          <strong>Entry fee: €5.00</strong> — added to your cart. Pay securely at checkout.
+        </div>
+
+        <div id="formError" style="font-size:13px;color:#dc2626;display:none"></div>
+        <button type="submit" class="btn btn-primary btn-full" style="padding:13px">Add to cart 🛒</button>
+      </form>
+    </div>
+  </div>
+
+  <main>
+    <div class="page" style="padding-top:40px;padding-bottom:80px">
+      <div id="pageContent">
+        <div style="text-align:center;padding:80px 0;color:var(--text-subtle)">Loading…</div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">🐴 Nättely Suomi</div>
+          <p style="color:#94a3b8;font-size:14px;line-height:1.65;margin-top:12px;max-width:280px">Finland's leading online horse show platform. Compete from home, get judged by professionals, and win real rosettes.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Compete</div>
+          <ul class="footer-links">
+            <li><a href="/competitions.html">Browse shows</a></li>
+            <li><a href="/about.html">How it works</a></li>
+            <li><a href="/faq.html">FAQ</a></li>
+            <li><a href="/cart.html">Cart</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Partners</div>
+          <ul class="footer-links">
+            <li><a href="/sponsors.html">Sponsors</a></li>
+            <li><a href="mailto:info@nattelysuomi.fi">Become a sponsor</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/privacy.html">Privacy policy</a></li>
+            <li><a href="mailto:info@nattelysuomi.fi">Email us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Nättely Suomi Oy. All rights reserved.</span>
+        <span>Made in Helsinki 🇫🇮 · For riders, by riders</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/data.js"></script>
+  <script src="/js/cart.js"></script>
+  <script src="/js/nav.js"></script>
+  <script>
+    var _activeClass = null;
+    var _activeComp  = null;
+    var _photoData   = null;
+
+    function esc(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function openModal(comp, cls) {
+      _activeComp  = comp;
+      _activeClass = cls;
+      _photoData   = null;
+      document.getElementById('modalTitle').textContent    = 'Enter: ' + cls.name;
+      document.getElementById('modalSubtitle').textContent = comp.name + ' · €5.00';
+      document.getElementById('entryForm').reset();
+      document.getElementById('photoPreview').style.display  = 'none';
+      document.getElementById('dropZoneInner').style.display = 'block';
+      document.getElementById('photoError').style.display    = 'none';
+      document.getElementById('formError').style.display     = 'none';
+      document.getElementById('entryModalOverlay').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('entryModalOverlay').style.display = 'none';
+      document.body.style.overflow = '';
+      _activeClass = null;
+      _activeComp  = null;
+      _photoData   = null;
+    }
+
+    function handleFile(file) {
+      var errEl = document.getElementById('photoError');
+      errEl.style.display = 'none';
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) {
+        errEl.textContent = 'File is too large. Maximum size is 10 MB.';
+        errEl.style.display = 'block';
+        return;
+      }
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        _photoData = e.target.result;
+        var preview = document.getElementById('photoPreview');
+        preview.src = _photoData;
+        preview.style.display = 'block';
+        document.getElementById('dropZoneInner').style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+      var photoInput = document.getElementById('photoInput');
+      if (photoInput) {
+        photoInput.addEventListener('change', function () { handleFile(this.files[0]); });
+      }
+
+      var dz = document.getElementById('dropZone');
+      if (dz) {
+        dz.addEventListener('dragover', function (e) { e.preventDefault(); dz.classList.add('drag-over'); });
+        dz.addEventListener('dragleave', function ()  { dz.classList.remove('drag-over'); });
+        dz.addEventListener('drop', function (e) {
+          e.preventDefault();
+          dz.classList.remove('drag-over');
+          var file = e.dataTransfer.files[0];
+          if (file) handleFile(file);
+        });
+      }
+
+      var form = document.getElementById('entryForm');
+      if (form) {
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+          var errEl = document.getElementById('formError');
+          errEl.style.display = 'none';
+          if (!_photoData) {
+            errEl.textContent = 'Please upload an entry photo.';
+            errEl.style.display = 'block';
+            return;
+          }
+          Cart.addItem({
+            competitionId:   _activeComp.id,
+            competitionName: _activeComp.name,
+            classId:         _activeClass.id,
+            className:       _activeClass.name,
+            riderName:       document.getElementById('riderName').value.trim(),
+            horseName:       document.getElementById('horseName').value.trim(),
+            horseAge:        document.getElementById('horseAge').value.trim(),
+            phone:           document.getElementById('phone').value.trim(),
+            address:         document.getElementById('address').value.trim(),
+            photoData:       _photoData,
+            priceEur:        5
+          });
+          closeModal();
+          Cart.openDrawer();
+        });
+      }
+
+      var overlay = document.getElementById('entryModalOverlay');
+      if (overlay) {
+        overlay.addEventListener('click', function (e) {
+          if (e.target === overlay) closeModal();
+        });
+      }
+
+      document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') closeModal();
+      });
+    });
+
+    // Load competition
+    (async function () {
+      var params  = new URLSearchParams(location.search);
+      var id      = params.get('id');
+      var content = document.getElementById('pageContent');
+
+      if (!id) {
+        content.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h2>No competition specified</h2><p>Please browse our shows to find a competition.</p><a href="/competitions.html" class="btn btn-primary">Browse shows</a></div>';
+        return;
+      }
+
+      try {
+        var comp = await DataService.getCompetition(id);
+        if (!comp) {
+          content.innerHTML = '<div class="empty-state"><div class="empty-icon">😕</div><h2>Competition not found</h2><p>This show may have been removed or the link is incorrect.</p><a href="/competitions.html" class="btn btn-primary">Browse shows</a></div>';
+          return;
+        }
+
+        document.title = comp.name + ' — Nättely Suomi';
+
+        var statusBadge = '';
+        if (comp.status === 'open')      statusBadge = '<span class="badge badge-green"><span class="badge-dot badge-dot-green"></span>Open for entries</span>';
+        if (comp.status === 'upcoming')  statusBadge = '<span class="badge badge-gray">Coming soon</span>';
+        if (comp.status === 'completed') statusBadge = '<span class="badge badge-gold">Completed</span>';
+
+        var classCount = (comp.classes || []).length;
+
+        var classesHtml = (comp.classes || []).map(function (cls) {
+          var actionHtml = '';
+          if (comp.status === 'open') {
+            var compJson = JSON.stringify(comp).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+            var clsJson  = JSON.stringify(cls).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+            actionHtml = '<button class="btn btn-primary btn-full" onclick="openModal(' + compJson + ',' + clsJson + ')">Enter this class →</button>';
+          } else if (comp.status === 'completed') {
+            var winnerHtml = cls.winner
+              ? '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:10px 12px;background:var(--brand-pale);border-radius:var(--r-sm)">' +
+                  '<span style="font-size:16px">🏆</span>' +
+                  '<span style="font-size:13px;font-weight:600;color:var(--brand)">Winner on file</span>' +
+                '</div>'
+              : '';
+            actionHtml = winnerHtml +
+              '<a href="/class.html?competition=' + encodeURIComponent(comp.id) + '&class=' + encodeURIComponent(cls.id) + '" class="btn btn-secondary btn-full">View results →</a>';
+          } else {
+            actionHtml = '<div class="btn btn-full" style="background:var(--bg-muted);color:var(--text-muted);border-color:var(--border);cursor:default">Entries open soon</div>';
+          }
+
+          return (
+            '<div class="class-card">' +
+              '<div class="class-card-body">' +
+                '<div class="class-card-name">' + esc(cls.name) + '</div>' +
+                '<div class="class-card-desc">' + esc(cls.description || '') + '</div>' +
+                actionHtml +
+              '</div>' +
+            '</div>'
+          );
+        }).join('');
+
+        content.innerHTML =
+          '<div class="breadcrumb">' +
+            '<a href="/competitions.html">Shows</a>' +
+            '<span class="breadcrumb-sep">/</span>' +
+            '<span>' + esc(comp.name) + '</span>' +
+          '</div>' +
+          '<div style="margin-bottom:40px">' +
+            '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">' +
+              statusBadge +
+              (comp.closingDate ? '<span style="font-size:13px;color:var(--text-muted)">Closes ' + esc(comp.closingDate) + '</span>' : '') +
+            '</div>' +
+            '<h1 style="font-size:32px;font-weight:800;margin-bottom:12px">' + esc(comp.name) + '</h1>' +
+            '<p style="font-size:16px;color:var(--text-muted);line-height:1.7;max-width:680px;margin-bottom:20px">' + esc(comp.description || '') + '</p>' +
+            '<div style="display:flex;gap:24px;flex-wrap:wrap">' +
+              '<span style="font-size:14px;color:var(--text-muted)">📅 ' + esc(comp.date || '') + '</span>' +
+              '<span style="font-size:14px;color:var(--text-muted)">🏆 ' + classCount + ' class' + (classCount !== 1 ? 'es' : '') + '</span>' +
+              (comp.status === 'open' ? '<span style="font-size:14px;color:var(--brand);font-weight:600">€5 per class entry</span>' : '') +
+            '</div>' +
+          '</div>' +
+          '<h2 style="font-size:20px;font-weight:700;margin-bottom:20px">Classes</h2>' +
+          '<div class="grid-3">' + classesHtml + '</div>';
+
+      } catch (err) {
+        console.error('Failed to load competition:', err);
+        content.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><h2>Failed to load</h2><p>Please refresh the page.</p></div>';
+      }
+    })();
+  </script>
+</body>
+</html>

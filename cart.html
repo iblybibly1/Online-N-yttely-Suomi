@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cart — Nättely Suomi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="nav" id="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo"><span>🐴</span><span>Nättely Suomi</span></a>
+      <nav class="nav-links">
+        <a href="/competitions.html" class="nav-link">Shows</a>
+        <a href="/about.html" class="nav-link">How it works</a>
+        <a href="/sponsors.html" class="nav-link">Sponsors</a>
+        <a href="/faq.html" class="nav-link">FAQ</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="cart-btn" id="cartBtn" aria-label="Cart">
+          🛒<span class="cart-count" id="cartCount" style="display:none">0</span>
+        </button>
+        <a href="/competitions.html" class="btn btn-primary btn-sm">Enter a show</a>
+        <button class="btn btn-sm" id="menuBtn" style="display:none">☰</button>
+      </div>
+    </div>
+    <div id="mobileMenu" style="display:none; padding:12px 24px; border-top:1px solid var(--border); background:white">
+      <a href="/competitions.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">Shows</a>
+      <a href="/about.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">How it works</a>
+    </div>
+  </header>
+
+  <!-- CART DRAWER -->
+  <div class="drawer-overlay" id="drawerOverlay" style="display:none" onclick="Cart.closeDrawer()"></div>
+  <div class="drawer" id="cartDrawer">
+    <div style="padding:24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-weight:700;font-size:18px">Cart</span>
+      <button onclick="Cart.closeDrawer()" style="background:none;border:none;cursor:pointer;font-size:20px">✕</button>
+    </div>
+    <div id="drawerItems" style="flex:1;overflow-y:auto;padding:16px"></div>
+    <div id="drawerFooter" style="padding:20px;border-top:1px solid var(--border)"></div>
+  </div>
+
+  <main>
+    <div class="page" style="padding-top:48px;padding-bottom:80px">
+
+      <div style="margin-bottom:32px">
+        <h1 style="font-size:28px;font-weight:800">Your Cart</h1>
+      </div>
+
+      <!-- EMPTY STATE -->
+      <div id="emptyState" style="display:none">
+        <div class="empty-state">
+          <div class="empty-icon">🛒</div>
+          <h2>Your cart is empty</h2>
+          <p>Add entries from an open show to get started.</p>
+          <a href="/competitions.html" class="btn btn-primary">Browse shows</a>
+        </div>
+      </div>
+
+      <!-- CART LAYOUT -->
+      <div id="cartLayout" style="display:flex;gap:32px;align-items:flex-start" class="cart-layout">
+
+        <!-- LEFT: Items list -->
+        <div style="flex:1;min-width:0">
+          <div id="cartItemsList"></div>
+        </div>
+
+        <!-- RIGHT: Order summary -->
+        <div style="width:320px;flex-shrink:0">
+          <div class="order-summary">
+            <h3>Order summary</h3>
+
+            <div id="orderLines"></div>
+
+            <div class="order-total">
+              <span>Total</span>
+              <span id="orderTotal">€0.00</span>
+            </div>
+
+            <div style="margin-top:24px;margin-bottom:16px">
+              <div style="font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:12px">Payment method</div>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <label class="payment-option">
+                  <input type="radio" name="paymentMethod" value="card" checked>
+                  <div>
+                    <div class="payment-option-label">💳 Card via Stripe</div>
+                    <div class="payment-option-sub">Visa, Mastercard, and more</div>
+                  </div>
+                </label>
+                <label class="payment-option">
+                  <input type="radio" name="paymentMethod" value="mobilepay">
+                  <div>
+                    <div class="payment-option-label">📱 MobilePay</div>
+                    <div class="payment-option-sub">Send payment manually in the app</div>
+                  </div>
+                </label>
+              </div>
+            </div>
+
+            <div id="checkoutError" style="font-size:13px;color:#dc2626;margin-bottom:12px;display:none"></div>
+
+            <button id="checkoutBtn" class="btn btn-primary btn-full" style="padding:13px;font-size:15px">
+              Proceed to payment →
+            </button>
+
+            <p style="font-size:12px;color:var(--text-subtle);text-align:center;margin-top:12px">
+              🔒 Secure checkout &middot; €5 per class entry
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">🐴 Nättely Suomi</div>
+          <p style="color:#94a3b8;font-size:14px;line-height:1.65;margin-top:12px;max-width:280px">Finland's leading online horse show platform. Compete from home, get judged by professionals, and win real rosettes.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Compete</div>
+          <ul class="footer-links">
+            <li><a href="/competitions.html">Browse shows</a></li>
+            <li><a href="/about.html">How it works</a></li>
+            <li><a href="/faq.html">FAQ</a></li>
+            <li><a href="/cart.html">Cart</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Partners</div>
+          <ul class="footer-links">
+            <li><a href="/sponsors.html">Sponsors</a></li>
+            <li><a href="mailto:info@nattelysuomi.fi">Become a sponsor</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/privacy.html">Privacy policy</a></li>
+            <li><a href="mailto:info@nattelysuomi.fi">Email us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Nättely Suomi Oy. All rights reserved.</span>
+        <span>Made in Helsinki 🇫🇮 · For riders, by riders</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/data.js"></script>
+  <script src="/js/cart.js"></script>
+  <script src="/js/nav.js"></script>
+  <script>
+    function esc(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function renderCartPage() {
+      var items      = Cart.getItems();
+      var emptyState = document.getElementById('emptyState');
+      var cartLayout = document.getElementById('cartLayout');
+      var itemsList  = document.getElementById('cartItemsList');
+      var orderLines = document.getElementById('orderLines');
+      var totalEl    = document.getElementById('orderTotal');
+
+      if (items.length === 0) {
+        emptyState.style.display = 'block';
+        cartLayout.style.display = 'none';
+        return;
+      }
+
+      emptyState.style.display = 'none';
+      cartLayout.style.display = 'flex';
+
+      itemsList.innerHTML = items.map(function (item) {
+        var thumb = item.photoData
+          ? '<img class="cart-item-thumb" src="' + item.photoData + '" alt="Entry photo" onerror="this.style.background=\'var(--bg-muted)\';this.removeAttribute(\'src\')">'
+          : '<div class="cart-item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--bg-muted)">🐴</div>';
+
+        return (
+          '<div class="cart-item">' +
+            thumb +
+            '<div class="cart-item-info">' +
+              '<div class="cart-item-name">' + esc(item.className || 'Class entry') + '</div>' +
+              '<div class="cart-item-sub">' + esc(item.competitionName || '') + '</div>' +
+              '<div class="cart-item-sub">🐴 ' + esc(item.horseName || '') + ' &middot; ' + esc(item.riderName || '') + '</div>' +
+              '<div class="cart-item-price">€' + (Number(item.priceEur) || 5).toFixed(2) + '</div>' +
+            '</div>' +
+            '<button onclick="removeAndRefresh(\'' + esc(item.cartId) + '\')" ' +
+              'style="background:none;border:none;cursor:pointer;color:var(--text-subtle);font-size:18px;padding:4px;flex-shrink:0;align-self:flex-start" ' +
+              'title="Remove entry">✕</button>' +
+          '</div>'
+        );
+      }).join('');
+
+      orderLines.innerHTML = items.map(function (item) {
+        return (
+          '<div class="order-line">' +
+            '<span style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' +
+              esc(item.className || 'Entry') +
+            '</span>' +
+            '<span>€' + (Number(item.priceEur) || 5).toFixed(2) + '</span>' +
+          '</div>'
+        );
+      }).join('');
+
+      if (totalEl) totalEl.textContent = '€' + Cart.getTotal().toFixed(2);
+    }
+
+    function removeAndRefresh(cartId) {
+      Cart.removeItem(cartId);
+      renderCartPage();
+    }
+
+    document.getElementById('checkoutBtn').addEventListener('click', async function () {
+      var items   = Cart.getItems();
+      var method  = document.querySelector('input[name="paymentMethod"]:checked');
+      var errorEl = document.getElementById('checkoutError');
+      var btn     = document.getElementById('checkoutBtn');
+      errorEl.style.display = 'none';
+
+      if (items.length === 0) {
+        errorEl.textContent = 'Your cart is empty.';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      var payMethod = method ? method.value : 'card';
+
+      if (payMethod === 'mobilepay') {
+        window.location.href = '/mobilepay.html';
+        return;
+      }
+
+      // Stripe card checkout — strip photoData to keep payload manageable
+      btn.disabled = true;
+      btn.textContent = 'Redirecting to Stripe…';
+
+      var itemsForApi = items.map(function (item) {
+        return {
+          cartId:          item.cartId,
+          competitionId:   item.competitionId,
+          competitionName: item.competitionName,
+          classId:         item.classId,
+          className:       item.className,
+          riderName:       item.riderName,
+          horseName:       item.horseName,
+          horseAge:        item.horseAge,
+          phone:           item.phone,
+          address:         item.address,
+          priceEur:        item.priceEur || 5
+        };
+      });
+
+      try {
+        var res = await fetch('/api/checkout', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ items: itemsForApi })
+        });
+
+        if (!res.ok) {
+          var data = await res.json().catch(function () { return {}; });
+          throw new Error(data.error || 'Checkout failed. Please try again.');
+        }
+
+        var result = await res.json();
+        if (result.url) {
+          window.location.href = result.url;
+        } else {
+          throw new Error('No checkout URL returned from server.');
+        }
+      } catch (err) {
+        errorEl.textContent = err.message || 'Something went wrong. Please try again.';
+        errorEl.style.display = 'block';
+        btn.disabled = false;
+        btn.textContent = 'Proceed to payment →';
+      }
+    });
+
+    renderCartPage();
+  </script>
+</body>
+</html>

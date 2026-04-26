@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MobilePay — Nättely Suomi</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+
+  <!-- NAVBAR -->
+  <header class="nav" id="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-logo"><span>🐴</span><span>Nättely Suomi</span></a>
+      <nav class="nav-links">
+        <a href="/competitions.html" class="nav-link">Shows</a>
+        <a href="/about.html" class="nav-link">How it works</a>
+        <a href="/sponsors.html" class="nav-link">Sponsors</a>
+        <a href="/faq.html" class="nav-link">FAQ</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="cart-btn" id="cartBtn" aria-label="Cart">
+          🛒<span class="cart-count" id="cartCount" style="display:none">0</span>
+        </button>
+        <a href="/competitions.html" class="btn btn-primary btn-sm">Enter a show</a>
+        <button class="btn btn-sm" id="menuBtn" style="display:none">☰</button>
+      </div>
+    </div>
+    <div id="mobileMenu" style="display:none; padding:12px 24px; border-top:1px solid var(--border); background:white">
+      <a href="/competitions.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">Shows</a>
+      <a href="/about.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">How it works</a>
+    </div>
+  </header>
+
+  <!-- CART DRAWER -->
+  <div class="drawer-overlay" id="drawerOverlay" style="display:none" onclick="Cart.closeDrawer()"></div>
+  <div class="drawer" id="cartDrawer">
+    <div style="padding:24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
+      <span style="font-weight:700;font-size:18px">Cart</span>
+      <button onclick="Cart.closeDrawer()" style="background:none;border:none;cursor:pointer;font-size:20px">✕</button>
+    </div>
+    <div id="drawerItems" style="flex:1;overflow-y:auto;padding:16px"></div>
+    <div id="drawerFooter" style="padding:20px;border-top:1px solid var(--border)"></div>
+  </div>
+
+  <main>
+    <div class="page" style="padding-top:48px;padding-bottom:80px;max-width:680px">
+
+      <div class="breadcrumb">
+        <a href="/cart.html">Cart</a>
+        <span class="breadcrumb-sep">/</span>
+        <span>MobilePay</span>
+      </div>
+
+      <div style="margin-bottom:40px">
+        <div class="section-label" style="margin-bottom:12px">Manual payment</div>
+        <h1 style="font-size:28px;font-weight:800;margin-bottom:8px">Pay with MobilePay</h1>
+        <p style="color:var(--text-muted);font-size:15px">Follow these four steps to complete your entry payment.</p>
+      </div>
+
+      <!-- AMOUNT BANNER -->
+      <div style="background:var(--brand-pale);border:1px solid #bbf7d0;border-radius:var(--r-lg);padding:20px 24px;margin-bottom:32px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px">
+        <div>
+          <div style="font-size:13px;color:var(--brand);font-weight:600;margin-bottom:4px">Amount to send</div>
+          <div style="font-size:32px;font-weight:800;color:var(--brand)" id="totalAmount">€0.00</div>
+        </div>
+        <div style="font-size:13px;color:var(--text-muted)" id="entryCount">0 class entries</div>
+      </div>
+
+      <!-- STEPS -->
+      <div class="mobilepay-steps" style="margin-bottom:40px">
+
+        <div class="mobilepay-step">
+          <div class="mobilepay-num">1</div>
+          <div class="mobilepay-step-content">
+            <h3>Open MobilePay</h3>
+            <p>Open the MobilePay app on your phone and tap <strong>Send money</strong>. Search for the recipient below.</p>
+            <div style="margin-top:16px;padding:20px;background:white;border:2px solid var(--border);border-radius:var(--r-md);text-align:center">
+              <div style="font-size:56px;margin-bottom:8px">📱</div>
+              <div style="font-size:13px;color:var(--text-muted);margin-bottom:6px">Send to</div>
+              <div style="font-size:18px;font-weight:800;color:var(--text)">Nättely Suomi</div>
+              <div style="font-size:13px;color:var(--text-subtle);margin-top:4px">nattelysuomi</div>
+              <div style="margin-top:12px;padding:8px 14px;background:var(--bg-muted);border-radius:var(--r-sm);font-size:12px;color:var(--text-muted)">
+                QR code configured via <code>NEXT_PUBLIC_MOBILEPAY_LINK</code> environment variable
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mobilepay-step">
+          <div class="mobilepay-num">2</div>
+          <div class="mobilepay-step-content">
+            <h3>Send <span id="stepAmount">€0.00</span></h3>
+            <p>Enter the exact amount shown in the banner above. This covers all your class entries at €5 each.</p>
+          </div>
+        </div>
+
+        <div class="mobilepay-step">
+          <div class="mobilepay-num">3</div>
+          <div class="mobilepay-step-content">
+            <h3>Write your full name in the note</h3>
+            <p>This is how we match your payment to your entries. Copy your name below and paste it into the MobilePay note field before sending.</p>
+            <div style="margin-top:12px">
+              <div style="display:flex;gap:8px;align-items:center">
+                <div id="riderNameDisplay" style="flex:1;background:var(--bg-muted);border:1px solid var(--border);border-radius:var(--r-sm);padding:10px 14px;font-size:14px;font-weight:600;color:var(--text)">—</div>
+                <button class="btn btn-secondary btn-sm" onclick="copyName()">Copy</button>
+              </div>
+              <div id="copyConfirm" style="font-size:12px;color:var(--brand);margin-top:6px;display:none">✓ Copied to clipboard</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="mobilepay-step">
+          <div class="mobilepay-num">4</div>
+          <div class="mobilepay-step-content">
+            <h3>Email confirmation within 24 hours</h3>
+            <p>Once we verify your payment we will send a confirmation email. Your entries will be registered and judged after payment is confirmed. Results are typically published within 2–4 weeks of the show's closing date.</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ENTRY SUMMARY -->
+      <div style="background:var(--bg-muted);border:1px solid var(--border);border-radius:var(--r-lg);padding:24px;margin-bottom:32px">
+        <h3 style="font-size:16px;font-weight:700;margin-bottom:16px">Your entries</h3>
+        <div id="entrySummary">
+          <p style="color:var(--text-muted);font-size:14px">Loading…</p>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <a href="/cart.html" class="btn btn-secondary">← Back to cart</a>
+        <a href="/competitions.html" class="btn btn-primary">Browse more shows</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="footer">
+    <div class="footer-inner">
+      <div class="footer-grid">
+        <div>
+          <div class="footer-brand">🐴 Nättely Suomi</div>
+          <p style="color:#94a3b8;font-size:14px;line-height:1.65;margin-top:12px;max-width:280px">Finland's leading online horse show platform. Compete from home, get judged by professionals, and win real rosettes.</p>
+        </div>
+        <div>
+          <div class="footer-col-title">Compete</div>
+          <ul class="footer-links">
+            <li><a href="/competitions.html">Browse shows</a></li>
+            <li><a href="/about.html">How it works</a></li>
+            <li><a href="/faq.html">FAQ</a></li>
+            <li><a href="/cart.html">Cart</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Partners</div>
+          <ul class="footer-links">
+            <li><a href="/sponsors.html">Sponsors</a></li>
+            <li><a href="mailto:info@nattelysuomi.fi">Become a sponsor</a></li>
+          </ul>
+        </div>
+        <div>
+          <div class="footer-col-title">Company</div>
+          <ul class="footer-links">
+            <li><a href="/about.html">About</a></li>
+            <li><a href="/privacy.html">Privacy policy</a></li>
+            <li><a href="mailto:info@nattelysuomi.fi">Email us</a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Nättely Suomi Oy. All rights reserved.</span>
+        <span>Made in Helsinki 🇫🇮 · For riders, by riders</span>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/js/data.js"></script>
+  <script src="/js/cart.js"></script>
+  <script src="/js/nav.js"></script>
+  <script>
+    function esc(str) {
+      return String(str || '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    function copyName() {
+      var nameEl = document.getElementById('riderNameDisplay');
+      var name   = nameEl ? nameEl.textContent.trim() : '';
+      if (!name || name === '—') return;
+      var confirm = document.getElementById('copyConfirm');
+
+      function showConfirm() {
+        if (confirm) {
+          confirm.style.display = 'block';
+          setTimeout(function () { confirm.style.display = 'none'; }, 2000);
+        }
+      }
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(name).then(showConfirm).catch(function () {
+          fallbackCopy(name);
+          showConfirm();
+        });
+      } else {
+        fallbackCopy(name);
+        showConfirm();
+      }
+    }
+
+    function fallbackCopy(text) {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.style.position = 'fixed';
+      ta.style.opacity  = '0';
+      document.body.appendChild(ta);
+      ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta);
+    }
+
+    (function () {
+      var items = Cart.getItems();
+      var total = Cart.getTotal();
+
+      var totalAmountEl = document.getElementById('totalAmount');
+      var stepAmountEl  = document.getElementById('stepAmount');
+      var entryCountEl  = document.getElementById('entryCount');
+      var riderDisplay  = document.getElementById('riderNameDisplay');
+      var summaryEl     = document.getElementById('entrySummary');
+
+      if (totalAmountEl) totalAmountEl.textContent = '€' + total.toFixed(2);
+      if (stepAmountEl)  stepAmountEl.textContent  = '€' + total.toFixed(2);
+      if (entryCountEl)  entryCountEl.textContent  = items.length + ' class entr' + (items.length !== 1 ? 'ies' : 'y');
+
+      if (riderDisplay) {
+        riderDisplay.textContent = (items.length > 0 && items[0].riderName) ? items[0].riderName : '(your full name)';
+      }
+
+      if (!summaryEl) return;
+
+      if (items.length === 0) {
+        summaryEl.innerHTML =
+          '<p style="color:var(--text-muted);font-size:14px">No items in cart. ' +
+          '<a href="/competitions.html" style="color:var(--brand)">Browse shows →</a></p>';
+        return;
+      }
+
+      summaryEl.innerHTML =
+        items.map(function (item) {
+          return (
+            '<div style="display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border)">' +
+              '<div>' +
+                '<div style="font-size:14px;font-weight:600">' + esc(item.className || 'Entry') + '</div>' +
+                '<div style="font-size:12px;color:var(--text-muted)">' +
+                  esc(item.competitionName || '') + ' &middot; ' + esc(item.horseName || '') +
+                '</div>' +
+              '</div>' +
+              '<div style="font-size:14px;font-weight:700;color:var(--brand)">€' + (Number(item.priceEur) || 5).toFixed(2) + '</div>' +
+            '</div>'
+          );
+        }).join('') +
+        '<div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;padding-top:12px;margin-top:4px">' +
+          '<span>Total</span><span style="color:var(--brand)">€' + total.toFixed(2) + '</span>' +
+        '</div>';
+    })();
+  </script>
+</body>
+</html>
