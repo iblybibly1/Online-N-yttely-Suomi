@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <base href="/Online-N-yttely-Suomi/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cart — Nättely Suomi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <!-- NAVBAR -->
   <header class="nav" id="navbar">
     <div class="nav-inner">
-      <a href="/" class="nav-logo"><span>🐴</span><span>Nättely Suomi</span></a>
+      <a href="index.html" class="nav-logo"><span>🐴</span><span>Nättely Suomi</span></a>
       <nav class="nav-links">
-        <a href="/competitions.html" class="nav-link">Shows</a>
-        <a href="/about.html" class="nav-link">How it works</a>
-        <a href="/sponsors.html" class="nav-link">Sponsors</a>
-        <a href="/faq.html" class="nav-link">FAQ</a>
+        <a href="competitions.html" class="nav-link">Shows</a>
+        <a href="about.html" class="nav-link">How it works</a>
+        <a href="sponsors.html" class="nav-link">Sponsors</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
       </nav>
       <div class="nav-actions">
         <button class="cart-btn" id="cartBtn" aria-label="Cart">
           🛒<span class="cart-count" id="cartCount" style="display:none">0</span>
         </button>
-        <a href="/competitions.html" class="btn btn-primary btn-sm">Enter a show</a>
+        <a href="competitions.html" class="btn btn-primary btn-sm">Enter a show</a>
         <button class="btn btn-sm" id="menuBtn" style="display:none">☰</button>
       </div>
     </div>
     <div id="mobileMenu" style="display:none; padding:12px 24px; border-top:1px solid var(--border); background:white">
-      <a href="/competitions.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">Shows</a>
-      <a href="/about.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">How it works</a>
+      <a href="competitions.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">Shows</a>
+      <a href="about.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">How it works</a>
     </div>
   </header>
 
@@ -58,7 +59,7 @@
           <div class="empty-icon">🛒</div>
           <h2>Your cart is empty</h2>
           <p>Add entries from an open show to get started.</p>
-          <a href="/competitions.html" class="btn btn-primary">Browse shows</a>
+          <a href="competitions.html" class="btn btn-primary">Browse shows</a>
         </div>
       </div>
 
@@ -108,6 +109,11 @@
               Proceed to payment →
             </button>
 
+            <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:8px">
+              Card payments processed securely by Stripe. After paying, email your entry details to
+              <a href="mailto:info@nattelysuomi.fi">info@nattelysuomi.fi</a>
+            </p>
+
             <p style="font-size:12px;color:var(--text-subtle);text-align:center;margin-top:12px">
               🔒 Secure checkout &middot; €5 per class entry
             </p>
@@ -129,24 +135,24 @@
         <div>
           <div class="footer-col-title">Compete</div>
           <ul class="footer-links">
-            <li><a href="/competitions.html">Browse shows</a></li>
-            <li><a href="/about.html">How it works</a></li>
-            <li><a href="/faq.html">FAQ</a></li>
-            <li><a href="/cart.html">Cart</a></li>
+            <li><a href="competitions.html">Browse shows</a></li>
+            <li><a href="about.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="cart.html">Cart</a></li>
           </ul>
         </div>
         <div>
           <div class="footer-col-title">Partners</div>
           <ul class="footer-links">
-            <li><a href="/sponsors.html">Sponsors</a></li>
+            <li><a href="sponsors.html">Sponsors</a></li>
             <li><a href="mailto:info@nattelysuomi.fi">Become a sponsor</a></li>
           </ul>
         </div>
         <div>
           <div class="footer-col-title">Company</div>
           <ul class="footer-links">
-            <li><a href="/about.html">About</a></li>
-            <li><a href="/privacy.html">Privacy policy</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="privacy.html">Privacy policy</a></li>
             <li><a href="mailto:info@nattelysuomi.fi">Email us</a></li>
           </ul>
         </div>
@@ -158,10 +164,12 @@
     </div>
   </footer>
 
-  <script src="/js/data.js"></script>
-  <script src="/js/cart.js"></script>
-  <script src="/js/nav.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/nav.js"></script>
   <script>
+    var STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/YOUR_LINK_HERE';
+
     function esc(str) {
       return String(str || '')
         .replace(/&/g, '&amp;')
@@ -227,11 +235,9 @@
       renderCartPage();
     }
 
-    document.getElementById('checkoutBtn').addEventListener('click', async function () {
+    document.getElementById('checkoutBtn').addEventListener('click', function () {
       var items   = Cart.getItems();
-      var method  = document.querySelector('input[name="paymentMethod"]:checked');
       var errorEl = document.getElementById('checkoutError');
-      var btn     = document.getElementById('checkoutBtn');
       errorEl.style.display = 'none';
 
       if (items.length === 0) {
@@ -240,57 +246,16 @@
         return;
       }
 
-      var payMethod = method ? method.value : 'card';
+      var method = document.querySelector('input[name="paymentMethod"]:checked').value;
 
-      if (payMethod === 'mobilepay') {
-        window.location.href = '/mobilepay.html';
+      if (method === 'mobilepay') {
+        window.location.href = 'mobilepay.html';
         return;
       }
 
-      // Stripe card checkout — strip photoData to keep payload manageable
-      btn.disabled = true;
-      btn.textContent = 'Redirecting to Stripe…';
-
-      var itemsForApi = items.map(function (item) {
-        return {
-          cartId:          item.cartId,
-          competitionId:   item.competitionId,
-          competitionName: item.competitionName,
-          classId:         item.classId,
-          className:       item.className,
-          riderName:       item.riderName,
-          horseName:       item.horseName,
-          horseAge:        item.horseAge,
-          phone:           item.phone,
-          address:         item.address,
-          priceEur:        item.priceEur || 5
-        };
-      });
-
-      try {
-        var res = await fetch('/api/checkout', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ items: itemsForApi })
-        });
-
-        if (!res.ok) {
-          var data = await res.json().catch(function () { return {}; });
-          throw new Error(data.error || 'Checkout failed. Please try again.');
-        }
-
-        var result = await res.json();
-        if (result.url) {
-          window.location.href = result.url;
-        } else {
-          throw new Error('No checkout URL returned from server.');
-        }
-      } catch (err) {
-        errorEl.textContent = err.message || 'Something went wrong. Please try again.';
-        errorEl.style.display = 'block';
-        btn.disabled = false;
-        btn.textContent = 'Proceed to payment →';
-      }
+      // Card payment: redirect to Stripe Payment Link
+      // User pays there, amount matches their cart total
+      window.location.href = STRIPE_PAYMENT_LINK;
     });
 
     renderCartPage();

@@ -103,7 +103,7 @@
         '<div class="drawer-empty">' +
           '<div style="font-size:48px;margin-bottom:16px;opacity:0.4">🛒</div>' +
           '<p style="font-size:14px">Your cart is empty</p>' +
-          '<a href="/competitions.html" class="btn btn-primary btn-sm" style="margin-top:16px" onclick="Cart.closeDrawer()">Browse shows</a>' +
+          '<a href="competitions.html" class="btn btn-primary btn-sm" style="margin-top:16px" onclick="Cart.closeDrawer()">Browse shows</a>' +
         '</div>';
       if (footerEl) footerEl.innerHTML = '';
       return;
@@ -136,7 +136,7 @@
         '<div style="display:flex;justify-content:space-between;font-weight:700;font-size:16px;margin-bottom:16px">' +
           '<span>Total</span><span>€' + total.toFixed(2) + '</span>' +
         '</div>' +
-        '<a href="/cart.html" class="btn btn-primary btn-full" onclick="Cart.closeDrawer()">View cart &amp; checkout</a>';
+        '<a href="cart.html" class="btn btn-primary btn-full" onclick="Cart.closeDrawer()">View cart &amp; checkout</a>';
     }
   }
 

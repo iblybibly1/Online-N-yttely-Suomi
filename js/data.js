@@ -9,7 +9,7 @@
 
   async function fetchData() {
     if (_cache) return _cache;
-    const res = await fetch('/data/competitions.json');
+    const res = await fetch('data/competitions.json');
     if (!res.ok) throw new Error('Failed to load competition data');
     _cache = await res.json();
     return _cache;

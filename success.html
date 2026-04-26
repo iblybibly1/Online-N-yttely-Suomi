@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <base href="/Online-N-yttely-Suomi/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Confirmed — Nättely Suomi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
   <!-- NAVBAR -->
   <header class="nav" id="navbar">
     <div class="nav-inner">
-      <a href="/" class="nav-logo"><span>🐴</span><span>Nättely Suomi</span></a>
+      <a href="index.html" class="nav-logo"><span>🐴</span><span>Nättely Suomi</span></a>
       <nav class="nav-links">
-        <a href="/competitions.html" class="nav-link">Shows</a>
-        <a href="/about.html" class="nav-link">How it works</a>
-        <a href="/sponsors.html" class="nav-link">Sponsors</a>
-        <a href="/faq.html" class="nav-link">FAQ</a>
+        <a href="competitions.html" class="nav-link">Shows</a>
+        <a href="about.html" class="nav-link">How it works</a>
+        <a href="sponsors.html" class="nav-link">Sponsors</a>
+        <a href="faq.html" class="nav-link">FAQ</a>
       </nav>
       <div class="nav-actions">
         <button class="cart-btn" id="cartBtn" aria-label="Cart">
           🛒<span class="cart-count" id="cartCount" style="display:none">0</span>
         </button>
-        <a href="/competitions.html" class="btn btn-primary btn-sm">Enter a show</a>
+        <a href="competitions.html" class="btn btn-primary btn-sm">Enter a show</a>
         <button class="btn btn-sm" id="menuBtn" style="display:none">☰</button>
       </div>
     </div>
     <div id="mobileMenu" style="display:none; padding:12px 24px; border-top:1px solid var(--border); background:white">
-      <a href="/competitions.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">Shows</a>
-      <a href="/about.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">How it works</a>
+      <a href="competitions.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">Shows</a>
+      <a href="about.html" style="display:block;padding:10px;font-size:15px;font-weight:500;color:var(--text);text-decoration:none">How it works</a>
     </div>
   </header>
 
@@ -57,8 +58,8 @@
         </p>
         <div id="sessionInfo" style="font-size:12px;color:var(--text-subtle);margin-bottom:8px"></div>
         <div class="result-actions">
-          <a href="/competitions.html" class="btn btn-primary">Browse more shows →</a>
-          <a href="/" class="btn btn-secondary">Back to home</a>
+          <a href="competitions.html" class="btn btn-primary">Browse more shows →</a>
+          <a href="index.html" class="btn btn-secondary">Back to home</a>
         </div>
       </div>
     </div>
@@ -75,24 +76,24 @@
         <div>
           <div class="footer-col-title">Compete</div>
           <ul class="footer-links">
-            <li><a href="/competitions.html">Browse shows</a></li>
-            <li><a href="/about.html">How it works</a></li>
-            <li><a href="/faq.html">FAQ</a></li>
-            <li><a href="/cart.html">Cart</a></li>
+            <li><a href="competitions.html">Browse shows</a></li>
+            <li><a href="about.html">How it works</a></li>
+            <li><a href="faq.html">FAQ</a></li>
+            <li><a href="cart.html">Cart</a></li>
           </ul>
         </div>
         <div>
           <div class="footer-col-title">Partners</div>
           <ul class="footer-links">
-            <li><a href="/sponsors.html">Sponsors</a></li>
+            <li><a href="sponsors.html">Sponsors</a></li>
             <li><a href="mailto:info@nattelysuomi.fi">Become a sponsor</a></li>
           </ul>
         </div>
         <div>
           <div class="footer-col-title">Company</div>
           <ul class="footer-links">
-            <li><a href="/about.html">About</a></li>
-            <li><a href="/privacy.html">Privacy policy</a></li>
+            <li><a href="about.html">About</a></li>
+            <li><a href="privacy.html">Privacy policy</a></li>
             <li><a href="mailto:info@nattelysuomi.fi">Email us</a></li>
           </ul>
         </div>
@@ -104,9 +105,9 @@
     </div>
   </footer>
 
-  <script src="/js/data.js"></script>
-  <script src="/js/cart.js"></script>
-  <script src="/js/nav.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/cart.js"></script>
+  <script src="js/nav.js"></script>
   <script>
     (function () {
       Cart.clearCart();
