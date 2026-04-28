@@ -1,217 +1,421 @@
 {
   "competitions": [
     {
-      "id": "spring-open-2026",
-      "name": "Spring Open Show 2026",
-      "date": "May 1–31, 2026",
+      "id": "june-horse-conformation-2026",
+      "name": "June Horse Conformation Show",
+      "date": "June 2026",
       "closingDate": "2026-05-31",
-      "description": "Our flagship spring show welcoming all breeds and disciplines. Licensed judges, real rosettes posted worldwide, and a prize pool for top placements.",
+      "description": "Showcase your horse or pony's conformation and presence. Open to all breeds and ages. Submit one clear full-body photo.",
       "status": "open",
-      "banner": "/images/hero-horse.jpg",
+      "animal": "horse",
+      "banner": "images/shows/horse-conformation.jpg",
       "classes": [
         {
-          "id": "best-solid-colour",
-          "name": "Best Solid Colour Horse",
-          "description": "Open to any solid-coloured horse or pony. One clear, unedited photo showing the horse standing square.",
-          "folder": "/images/competitions/spring-open-2026/best-solid-colour/",
-          "winner": null,
-          "entries": []
-        },
-        {
-          "id": "best-palomino-dun-grey",
-          "name": "Best Palomino / Dun / Grey",
-          "description": "For palomino, dun, buckskin, grey, and roan horses. Show off that colour!",
-          "folder": "/images/competitions/spring-open-2026/best-palomino-dun-grey/",
+          "id": "best-stallion",
+          "name": "Best Stallion",
+          "description": "Open to entire males of any breed. Full-body side-on photo, horse standing square.",
+          "entryFee": 5,
+          "maxEntries": 50,
           "winner": null,
           "entries": []
         },
         {
           "id": "best-mare",
           "name": "Best Mare",
-          "description": "Open to mares of any breed and age. Conformation photo required.",
-          "folder": "/images/competitions/spring-open-2026/best-mare/",
+          "description": "Open to mares of any breed and age.",
+          "entryFee": 5,
+          "maxEntries": 50,
           "winner": null,
           "entries": []
         },
         {
-          "id": "best-stallion-gelding",
-          "name": "Best Stallion / Gelding",
-          "description": "Open to stallions and geldings of any breed and age.",
-          "folder": "/images/competitions/spring-open-2026/best-stallion-gelding/",
+          "id": "best-gelding",
+          "name": "Best Gelding",
+          "description": "Open to geldings of any breed and age.",
+          "entryFee": 5,
+          "maxEntries": 50,
           "winner": null,
           "entries": []
         },
         {
-          "id": "best-youngstock",
-          "name": "Best Youngstock (Under 4)",
-          "description": "For foals, yearlings, and horses aged 2–3. In-hand or loose in paddock.",
-          "folder": "/images/competitions/spring-open-2026/best-youngstock/",
-          "winner": null,
-          "entries": []
-        },
-        {
-          "id": "best-veteran",
-          "name": "Best Veteran (15+)",
-          "description": "Celebrating our senior horses, 15 years and over.",
-          "folder": "/images/competitions/spring-open-2026/best-veteran/",
-          "winner": null,
-          "entries": []
-        },
-        {
-          "id": "best-ridden",
-          "name": "Best Ridden Horse",
-          "description": "Show your horse under saddle. Any discipline welcome.",
-          "folder": "/images/competitions/spring-open-2026/best-ridden/",
-          "winner": null,
-          "entries": []
-        },
-        {
-          "id": "best-native",
-          "name": "Best Native / Mountain & Moorland",
-          "description": "For native breeds shown in their natural coat.",
-          "folder": "/images/competitions/spring-open-2026/best-native/",
+          "id": "best-pony",
+          "name": "Best Pony (under 148cm)",
+          "description": "Open to any pony under 148cm, all genders.",
+          "entryFee": 5,
+          "maxEntries": 50,
           "winner": null,
           "entries": []
         }
       ]
     },
     {
-      "id": "working-hunter-spring-2026",
-      "name": "Working Hunter Spring Series 2026",
-      "date": "May 15–31, 2026",
+      "id": "june-dog-breed-2026",
+      "name": "June Dog Breed Show",
+      "date": "June 2026",
       "closingDate": "2026-05-31",
-      "description": "Round 1 of our Working Hunter series. Submit a photo of your horse jumping a natural fence.",
+      "description": "Celebrate your dog's breed standard beauty. All breeds welcome — from tiny Chihuahuas to Great Danes. One high-quality photo per entry.",
       "status": "open",
-      "banner": "/images/hero-horse.jpg",
+      "animal": "dog",
+      "banner": "images/shows/dog-breed.jpg",
       "classes": [
         {
-          "id": "wh-novice",
-          "name": "Novice Working Hunter",
-          "description": "Fences up to 60 cm. Open to all horses and ponies.",
-          "folder": "/images/competitions/working-hunter-spring-2026/wh-novice/",
+          "id": "best-toy-breed",
+          "name": "Best Toy Breed",
+          "description": "Dogs under 5kg. Clear standing photo showing full body.",
+          "entryFee": 5,
+          "maxEntries": 60,
           "winner": null,
           "entries": []
         },
         {
-          "id": "wh-open",
-          "name": "Open Working Hunter",
-          "description": "Fences 70–90 cm. Experienced combinations welcome.",
-          "folder": "/images/competitions/working-hunter-spring-2026/wh-open/",
+          "id": "best-small-breed",
+          "name": "Best Small Breed",
+          "description": "Dogs 5–10kg. Any breed.",
+          "entryFee": 5,
+          "maxEntries": 60,
           "winner": null,
           "entries": []
         },
         {
-          "id": "wh-pony",
-          "name": "Pony Working Hunter",
-          "description": "For ponies 148 cm and under. Fences up to 70 cm.",
-          "folder": "/images/competitions/working-hunter-spring-2026/wh-pony/",
+          "id": "best-medium-breed",
+          "name": "Best Medium Breed",
+          "description": "Dogs 10–25kg. Any breed.",
+          "entryFee": 5,
+          "maxEntries": 60,
           "winner": null,
           "entries": []
         },
         {
-          "id": "wh-showmanship",
-          "name": "In-Hand Showmanship",
-          "description": "Judged on presentation, handler skill, and horse presence.",
-          "folder": "/images/competitions/working-hunter-spring-2026/wh-showmanship/",
+          "id": "best-large-breed",
+          "name": "Best Large Breed",
+          "description": "Dogs over 25kg. Any breed.",
+          "entryFee": 5,
+          "maxEntries": 60,
           "winner": null,
           "entries": []
         }
       ]
     },
     {
-      "id": "summer-classic-2026",
-      "name": "Summer Classic 2026",
-      "date": "June 1–30, 2026",
-      "closingDate": "2026-06-15",
-      "description": "Our biggest show of the summer. All breeds, all disciplines. Special prizes for Supreme Champion.",
-      "status": "upcoming",
-      "banner": "/images/hero-horse.jpg",
+      "id": "june-cat-show-2026",
+      "name": "June Cat Beauty Show",
+      "date": "June 2026",
+      "closingDate": "2026-05-31",
+      "description": "From fluffy Maine Coons to sleek Siamese — show off your cat's unique beauty. All breeds and moggies welcome.",
+      "status": "open",
+      "animal": "cat",
+      "banner": "images/shows/cat-show.jpg",
       "classes": [
         {
-          "id": "supreme-champion",
-          "name": "Supreme Champion",
-          "description": "The winner of each open class may be entered for Supreme Champion.",
-          "folder": "/images/competitions/summer-classic-2026/supreme-champion/",
+          "id": "best-longhair-cat",
+          "name": "Best Longhair Cat",
+          "description": "Open to all longhaired breeds and mixes.",
+          "entryFee": 5,
+          "maxEntries": 60,
           "winner": null,
           "entries": []
         },
         {
-          "id": "best-turnout",
-          "name": "Best Turnout",
-          "description": "Judged on rider and horse presentation.",
-          "folder": "/images/competitions/summer-classic-2026/best-turnout/",
+          "id": "best-shorthair-cat",
+          "name": "Best Shorthair Cat",
+          "description": "Open to all shorthaired breeds and mixes.",
+          "entryFee": 5,
+          "maxEntries": 60,
           "winner": null,
           "entries": []
         },
         {
-          "id": "dressage-prelim",
-          "name": "Dressage — Preliminary",
-          "description": "Submit a 2-minute video of your preliminary dressage test.",
-          "folder": "/images/competitions/summer-classic-2026/dressage-prelim/",
+          "id": "best-kitten",
+          "name": "Best Kitten (under 12 months)",
+          "description": "Open to kittens under 12 months, any breed.",
+          "entryFee": 5,
+          "maxEntries": 60,
           "winner": null,
           "entries": []
         }
       ]
     },
     {
-      "id": "winter-championship-2025",
-      "name": "Winter Championship 2025",
-      "date": "December 1–31, 2025",
-      "closingDate": "2025-12-15",
-      "description": "Our inaugural online championship. Congratulations to all who placed!",
-      "status": "completed",
-      "banner": "/images/hero-horse.jpg",
+      "id": "june-small-pet-2026",
+      "name": "June Small & Exotic Pet Show",
+      "date": "June 2026",
+      "closingDate": "2026-05-31",
+      "description": "Rabbits, guinea pigs, hamsters, birds, reptiles and more — every pet deserves a ribbon! Open to all small and exotic animals.",
+      "status": "open",
+      "animal": "small",
+      "banner": "images/shows/small-pets.jpg",
       "classes": [
         {
-          "id": "wc-best-stallion",
-          "name": "Best Stallion",
-          "description": "Open to stallions of any breed.",
-          "folder": "/images/competitions/winter-championship-2025/best-stallion/",
-          "winner": "winner.jpg",
-          "entries": ["entry1.jpg", "entry2.jpg", "entry3.jpg", "entry4.jpg"]
+          "id": "best-rabbit",
+          "name": "Best Rabbit",
+          "description": "Any breed or colour of rabbit.",
+          "entryFee": 5,
+          "maxEntries": 40,
+          "winner": null,
+          "entries": []
         },
         {
-          "id": "wc-best-mare",
-          "name": "Best Mare",
-          "description": "Open to mares of any breed.",
-          "folder": "/images/competitions/winter-championship-2025/best-mare/",
-          "winner": "winner.jpg",
-          "entries": ["entry1.jpg", "entry2.jpg", "entry3.jpg"]
+          "id": "best-guinea-pig",
+          "name": "Best Guinea Pig",
+          "description": "Any breed or colour of guinea pig.",
+          "entryFee": 5,
+          "maxEntries": 40,
+          "winner": null,
+          "entries": []
         },
         {
-          "id": "wc-best-colour",
-          "name": "Best Colour",
-          "description": "Any striking or unusual colour.",
-          "folder": "/images/competitions/winter-championship-2025/best-colour/",
-          "winner": "winner.jpg",
-          "entries": ["entry1.jpg", "entry2.jpg"]
+          "id": "best-bird",
+          "name": "Best Bird",
+          "description": "Open to all pet birds — parrots, budgies, canaries and more.",
+          "entryFee": 5,
+          "maxEntries": 40,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-exotic-pet",
+          "name": "Best Exotic / Other Pet",
+          "description": "Reptiles, rodents, fish, or any other pet not covered above.",
+          "entryFee": 5,
+          "maxEntries": 40,
+          "winner": null,
+          "entries": []
         }
       ]
-    }
-  ],
-  "slideshow": [
-    "/images/hero-horse.jpg",
-    "/images/hero-horse.jpg",
-    "/images/hero-horse.jpg"
-  ],
-  "sponsors": [
-    {
-      "name": "EquiSupplies Finland",
-      "logo": "/images/sponsors/equisupplies.png",
-      "website": "#",
-      "tier": "gold"
     },
     {
-      "name": "HorseCare Pro",
-      "logo": "/images/sponsors/horsecare.png",
-      "website": "#",
-      "tier": "silver"
+      "id": "june-dog-agility-2026",
+      "name": "June Dog Agility & Action",
+      "date": "June 2026",
+      "closingDate": "2026-05-31",
+      "description": "Show us your dog in motion! Submit a photo capturing your dog's athleticism — jumping, running, fetching, or mid-trick.",
+      "status": "open",
+      "animal": "dog",
+      "banner": "images/shows/dog-agility.jpg",
+      "classes": [
+        {
+          "id": "best-jump-action",
+          "name": "Best Jump or Agility Shot",
+          "description": "Dog captured mid-jump or navigating an obstacle.",
+          "entryFee": 5,
+          "maxEntries": 50,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-trick-photo",
+          "name": "Best Trick Photo",
+          "description": "Dog performing a trick — sit, roll over, balance, etc.",
+          "entryFee": 5,
+          "maxEntries": 50,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-water-action",
+          "name": "Best Water Action",
+          "description": "Dog swimming, splashing, or playing in water.",
+          "entryFee": 5,
+          "maxEntries": 50,
+          "winner": null,
+          "entries": []
+        }
+      ]
     },
     {
-      "name": "Stable Solutions",
-      "logo": "/images/sponsors/stable-solutions.png",
-      "website": "#",
-      "tier": "bronze"
+      "id": "june-horse-colour-2026",
+      "name": "June Horse Colour & Markings Show",
+      "date": "June 2026",
+      "closingDate": "2026-05-31",
+      "description": "Celebrate the stunning variety of equine coat colours and markings. From palominos to appaloosas, every colour has its class.",
+      "status": "open",
+      "animal": "horse",
+      "banner": "images/shows/horse-colour.jpg",
+      "classes": [
+        {
+          "id": "best-grey-white",
+          "name": "Best Grey or White",
+          "description": "Open to grey and white horses of any breed.",
+          "entryFee": 5,
+          "maxEntries": 40,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-palomino-cremello",
+          "name": "Best Palomino / Cremello / Dun",
+          "description": "Dilute coat colours in any breed.",
+          "entryFee": 5,
+          "maxEntries": 40,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-pinto-paint",
+          "name": "Best Pinto / Paint / Skewbald / Piebald",
+          "description": "Two-tone or multi-colour coat patterns.",
+          "entryFee": 5,
+          "maxEntries": 40,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-dark-solid",
+          "name": "Best Dark Solid (Bay, Black, Brown, Chestnut)",
+          "description": "Solid dark coat colours, any breed.",
+          "entryFee": 5,
+          "maxEntries": 40,
+          "winner": null,
+          "entries": []
+        }
+      ]
+    },
+    {
+      "id": "june-cutest-pet-2026",
+      "name": "June Cutest Pet Show",
+      "date": "June 2026",
+      "closingDate": "2026-05-31",
+      "description": "The most fun show of the season — who is the cutest? Any animal, any age, any breed. Let their personality shine through the photo!",
+      "status": "open",
+      "animal": "all",
+      "banner": "images/shows/cutest-pet.jpg",
+      "classes": [
+        {
+          "id": "cutest-dog",
+          "name": "Cutest Dog",
+          "description": "Most adorable dog photo wins. Any breed, any age.",
+          "entryFee": 5,
+          "maxEntries": 80,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "cutest-cat",
+          "name": "Cutest Cat",
+          "description": "Most adorable cat photo wins. Any breed, any age.",
+          "entryFee": 5,
+          "maxEntries": 80,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "cutest-horse-pony",
+          "name": "Cutest Horse or Pony",
+          "description": "Most adorable horse or pony photo wins.",
+          "entryFee": 5,
+          "maxEntries": 80,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "cutest-other-pet",
+          "name": "Cutest Other Animal",
+          "description": "Any other animal — rabbits, birds, reptiles, farm animals, etc.",
+          "entryFee": 5,
+          "maxEntries": 80,
+          "winner": null,
+          "entries": []
+        }
+      ]
+    },
+    {
+      "id": "june-dog-portrait-2026",
+      "name": "June Dog Portrait Show",
+      "date": "June 2026",
+      "closingDate": "2026-05-31",
+      "description": "A show dedicated to the art of dog photography. Close-up portraits, expressive eyes, and character shots. Judge looks for emotion, focus, and composition.",
+      "status": "open",
+      "animal": "dog",
+      "banner": "images/shows/dog-portrait.jpg",
+      "classes": [
+        {
+          "id": "best-puppy-portrait",
+          "name": "Best Puppy Portrait (under 12 months)",
+          "description": "Close-up portrait of a puppy under 12 months.",
+          "entryFee": 5,
+          "maxEntries": 50,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-adult-dog-portrait",
+          "name": "Best Adult Dog Portrait",
+          "description": "Close-up or head shot of an adult dog.",
+          "entryFee": 5,
+          "maxEntries": 50,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "best-senior-dog-portrait",
+          "name": "Best Senior Dog Portrait (7+ years)",
+          "description": "Portrait of a dog aged 7 or over. Celebrate the grey muzzle!",
+          "entryFee": 5,
+          "maxEntries": 50,
+          "winner": null,
+          "entries": []
+        }
+      ]
+    },
+    {
+      "id": "june-cat-lifestyle-2026",
+      "name": "June Cat Lifestyle Show",
+      "date": "June 2026",
+      "closingDate": "2026-05-31",
+      "description": "Cats in their natural habitat — sleeping, hunting, playing, or just being regal. Lifestyle and candid shots welcome. All breeds and moggies.",
+      "status": "open",
+      "animal": "cat",
+      "banner": "images/shows/cat-lifestyle.jpg",
+      "classes": [
+        {
+          "id": "cat-in-nature",
+          "name": "Cat in Nature / Outdoors",
+          "description": "Cat photographed outside in a natural setting.",
+          "entryFee": 5,
+          "maxEntries": 50,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "cat-indoors-lifestyle",
+          "name": "Cosy Indoor Cat",
+          "description": "Cat in a cosy indoor lifestyle setting — sleeping, on windowsill, etc.",
+          "entryFee": 5,
+          "maxEntries": 50,
+          "winner": null,
+          "entries": []
+        },
+        {
+          "id": "cat-action-play",
+          "name": "Cat in Action or Play",
+          "description": "Cat caught mid-action — jumping, playing, hunting.",
+          "entryFee": 5,
+          "maxEntries": 50,
+          "winner": null,
+          "entries": []
+        }
+      ]
+    },
+    {
+      "id": "june-best-in-show-2026",
+      "name": "June Grand Prix — Best in Show",
+      "date": "June 2026",
+      "closingDate": "2026-05-31",
+      "description": "The ultimate competition of the month. One class, all species — the very best photo from all entries wins the Grand Prix rosette and a €50 prize. Open to all animals.",
+      "status": "open",
+      "animal": "all",
+      "banner": "images/shows/grand-prix.jpg",
+      "classes": [
+        {
+          "id": "grand-prix-best-in-show",
+          "name": "Grand Prix — Best in Show",
+          "description": "Submit your single best photo of any animal. Judged on overall impact, quality, and presentation. Winner receives the Grand Prix rosette and €50 prize.",
+          "entryFee": 10,
+          "maxEntries": 200,
+          "winner": null,
+          "entries": []
+        }
+      ]
     }
   ]
 }

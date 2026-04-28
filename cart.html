@@ -4,7 +4,7 @@
   <base href="/Online-N-yttely-Suomi/">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Cart — Nättely Suomi</title>
+  <title>Cart — Online Show Suomi</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
@@ -14,7 +14,7 @@
   <!-- NAVBAR -->
   <header class="nav" id="navbar">
     <div class="nav-inner">
-      <a href="index.html" class="nav-logo"><span>🐴</span><span>Nättely Suomi</span></a>
+      <a href="index.html" class="nav-logo"><img src="images/logo.png" alt="Online Show Suomi" style="height:40px;width:auto;vertical-align:middle"> <span>Online Show Suomi</span></a>
       <nav class="nav-links">
         <a href="competitions.html" class="nav-link">Shows</a>
         <a href="about.html" class="nav-link">How it works</a>
@@ -110,7 +110,7 @@
             </button>
 
             <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:12px">
-              💡 Entry details and photos are submitted via the entry form on each class page.<br>
+              💡 Pet entry details and photos are submitted via the entry form on each class page.<br>
               Payment completes your registration.
             </p>
 
@@ -129,8 +129,8 @@
     <div class="footer-inner">
       <div class="footer-grid">
         <div>
-          <div class="footer-brand">🐴 Nättely Suomi</div>
-          <p style="color:#94a3b8;font-size:14px;line-height:1.65;margin-top:12px;max-width:280px">Finland's leading online horse show platform. Compete from home, get judged by professionals, and win real rosettes.</p>
+          <div class="footer-brand">⭐ Online Show Suomi</div>
+          <p style="color:#94a3b8;font-size:14px;line-height:1.65;margin-top:12px;max-width:280px">Finland's leading online pet show platform. Compete from home, get judged by professionals, and win real rosettes.</p>
         </div>
         <div>
           <div class="footer-col-title">Compete</div>
@@ -145,7 +145,7 @@
           <div class="footer-col-title">Partners</div>
           <ul class="footer-links">
             <li><a href="sponsors.html">Sponsors</a></li>
-            <li><a href="mailto:info@nattelysuomi.fi">Become a sponsor</a></li>
+            <li><a href="mailto:info@onlineshowsuomi.fi">Become a sponsor</a></li>
           </ul>
         </div>
         <div>
@@ -153,13 +153,13 @@
           <ul class="footer-links">
             <li><a href="about.html">About</a></li>
             <li><a href="privacy.html">Privacy policy</a></li>
-            <li><a href="mailto:info@nattelysuomi.fi">Email us</a></li>
+            <li><a href="mailto:info@onlineshowsuomi.fi">Email us</a></li>
           </ul>
         </div>
       </div>
       <div class="footer-bottom">
-        <span>© 2026 Nättely Suomi Oy. All rights reserved.</span>
-        <span>Made in Helsinki 🇫🇮 · For riders, by riders</span>
+        <span>© 2026 Online Show Suomi Oy. All rights reserved.</span>
+        <span>Made in Helsinki 🇫🇮 · For pet owners, by pet owners</span>
       </div>
     </div>
   </footer>
@@ -198,7 +198,7 @@
       itemsList.innerHTML = items.map(function (item) {
         var thumb = item.photoData
           ? '<img class="cart-item-thumb" src="' + item.photoData + '" alt="Entry photo" onerror="this.style.background=\'var(--bg-muted)\';this.removeAttribute(\'src\')">'
-          : '<div class="cart-item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--bg-muted)">🐴</div>';
+          : '<div class="cart-item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--bg-muted)">⭐</div>';
 
         return (
           '<div class="cart-item">' +
@@ -206,7 +206,7 @@
             '<div class="cart-item-info">' +
               '<div class="cart-item-name">' + esc(item.className || 'Class entry') + '</div>' +
               '<div class="cart-item-sub">' + esc(item.competitionName || '') + '</div>' +
-              '<div class="cart-item-sub">🐴 ' + esc(item.horseName || '') + ' &middot; ' + esc(item.riderName || '') + '</div>' +
+              '<div class="cart-item-sub">⭐ ' + esc(item.horseName || '') + ' &middot; ' + esc(item.riderName || '') + '</div>' +
               '<div class="cart-item-price">€' + (Number(item.priceEur) || 5).toFixed(2) + '</div>' +
             '</div>' +
             '<button onclick="removeAndRefresh(\'' + esc(item.cartId) + '\')" ' +
@@ -254,7 +254,7 @@
       // Card payment
       if (STRIPE_PAYMENT_LINK.indexOf('YOUR_LINK_HERE') !== -1) {
         var errEl = document.getElementById('checkoutError');
-        errEl.textContent = 'Card payment is not yet configured. Please use MobilePay or email info@nattelysuomi.fi to arrange payment.';
+        errEl.textContent = 'Card payment is not yet configured. Please use MobilePay or email info@onlineshowsuomi.fi to arrange payment.';
         errEl.style.display = 'block';
         return;
       }
