@@ -8,6 +8,40 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .pay-method-panel {
+      border: 1.5px solid var(--border); border-radius: 10px;
+      padding: 14px 16px; cursor: pointer; transition: border-color .15s, background .15s;
+      display: flex; align-items: flex-start; gap: 12px; margin-bottom: 8px;
+    }
+    .pay-method-panel:hover { border-color: var(--brand); }
+    .pay-method-panel.selected { border-color: var(--brand); background: var(--brand-pale); }
+    .pay-method-panel input[type=radio] { margin-top: 3px; accent-color: var(--brand); flex-shrink: 0; }
+    .pay-method-label { font-size: 14px; font-weight: 600; color: var(--text); }
+    .pay-method-sub { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .pay-details-box {
+      background: var(--bg-muted); border-radius: 10px;
+      padding: 20px; margin-top: 4px; margin-bottom: 8px; display: none;
+    }
+    .pay-details-box.active { display: block; }
+    .qr-wrap { text-align: center; margin: 8px 0 14px; }
+    .qr-wrap img { width: 150px; height: 150px; border-radius: 8px; border: 1px solid var(--border); }
+    .copy-link-row { display: flex; gap: 8px; margin-top: 10px; }
+    .copy-link-row input {
+      flex: 1; padding: 8px 10px; border: 1.5px solid var(--border);
+      border-radius: 7px; font-size: 12px; background: #fff; color: var(--text);
+      min-width: 0;
+    }
+    .copy-link-row button {
+      padding: 8px 14px; font-size: 12px; font-weight: 600;
+      background: var(--brand); color: #fff; border: none;
+      border-radius: 7px; cursor: pointer; white-space: nowrap;
+    }
+    .copy-link-row button:hover { opacity: .88; }
+    .bank-table td { padding: 5px 0; font-size: 13px; }
+    .bank-table td:first-child { color: var(--text-muted); width: 42%; }
+    .bank-table td:last-child { font-weight: 600; }
+  </style>
 </head>
 <body>
 
@@ -40,7 +74,7 @@
   <div class="drawer" id="cartDrawer">
     <div style="padding:24px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:center">
       <span style="font-weight:700;font-size:18px">Cart</span>
-      <button onclick="Cart.closeDrawer()" style="background:none;border:none;cursor:pointer;font-size:20px">✕</button>
+      <button onclick="Cart.closeDrawer()" style="background:none;border:none;cursor:pointer;font-size:20px">&#x2715;</button>
     </div>
     <div id="drawerItems" style="flex:1;overflow-y:auto;padding:16px"></div>
     <div id="drawerFooter" style="padding:20px;border-top:1px solid var(--border)"></div>
@@ -56,71 +90,115 @@
       <!-- EMPTY STATE -->
       <div id="emptyState" style="display:none">
         <div class="empty-state">
-          <div class="empty-icon">🛒</div>
+          <div class="empty-icon">&#128722;</div>
           <h2>Your cart is empty</h2>
-          <p>Add entries from an open show to get started.</p>
+          <p>Browse open shows and add your entries to get started.</p>
           <a href="competitions.html" class="btn btn-primary">Browse shows</a>
         </div>
       </div>
 
       <!-- CART LAYOUT -->
-      <div id="cartLayout" style="display:flex;gap:32px;align-items:flex-start" class="cart-layout">
+      <div id="cartLayout" style="display:none;gap:32px;align-items:flex-start" class="cart-layout">
 
         <!-- LEFT: Items list -->
         <div style="flex:1;min-width:0">
           <div id="cartItemsList"></div>
         </div>
 
-        <!-- RIGHT: Order summary -->
-        <div style="width:320px;flex-shrink:0">
+        <!-- RIGHT: Order summary + payment -->
+        <div style="width:340px;flex-shrink:0">
           <div class="order-summary">
             <h3>Order summary</h3>
-
             <div id="orderLines"></div>
-
             <div class="order-total">
               <span>Total</span>
-              <span id="orderTotal">€0.00</span>
+              <span id="orderTotal">&#8364;0.00</span>
             </div>
 
-            <div style="margin-top:24px;margin-bottom:16px">
-              <div style="font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:12px">Payment method</div>
-              <div style="display:flex;flex-direction:column;gap:8px">
-                <label class="payment-option">
-                  <input type="radio" name="paymentMethod" value="card" checked>
-                  <div>
-                    <div class="payment-option-label">💳 Card via Stripe</div>
-                    <div class="payment-option-sub">Visa, Mastercard, and more</div>
-                  </div>
-                </label>
-                <label class="payment-option">
-                  <input type="radio" name="paymentMethod" value="mobilepay">
-                  <div>
-                    <div class="payment-option-label">📱 MobilePay</div>
-                    <div class="payment-option-sub">Send payment manually in the app</div>
-                  </div>
-                </label>
+            <!-- PAYMENT METHOD -->
+            <div style="margin-top:24px">
+              <div style="font-size:13px;font-weight:600;color:var(--text-muted);margin-bottom:12px">Choose payment method</div>
+
+              <!-- PayPal / Card -->
+              <div class="pay-method-panel selected" id="pm_paypal" onclick="selectMethod('paypal')">
+                <input type="radio" name="pm" value="paypal" checked>
+                <div>
+                  <div class="pay-method-label">&#128179; PayPal &amp; Debit / Credit Card</div>
+                  <div class="pay-method-sub">Visa, Mastercard, Amex &mdash; no PayPal account needed</div>
+                </div>
               </div>
-            </div>
+              <div class="pay-details-box active" id="details_paypal">
+                <div id="paypal-button-container"></div>
+                <p style="font-size:11px;color:var(--text-muted);margin-top:8px;text-align:center">
+                  Click <strong>Debit or Credit Card</strong> inside the PayPal button to pay without a PayPal account.
+                </p>
+              </div>
 
-            <div id="checkoutError" style="font-size:13px;color:#dc2626;margin-bottom:12px;display:none"></div>
+              <!-- MobilePay -->
+              <div class="pay-method-panel" id="pm_mobilepay" onclick="selectMethod('mobilepay')">
+                <input type="radio" name="pm" value="mobilepay">
+                <div>
+                  <div class="pay-method-label">&#128242; MobilePay</div>
+                  <div class="pay-method-sub">Scan QR code or tap payment link</div>
+                </div>
+              </div>
+              <div class="pay-details-box" id="details_mobilepay">
+                <div style="font-size:13px;font-weight:700;margin-bottom:10px">Pay via MobilePay</div>
+                <div class="qr-wrap">
+                  <!-- Upload your MobilePay QR image to images/mobilepay-qr.png -->
+                  <img src="images/mobilepay-qr.png" alt="MobilePay QR code"
+                    onerror="this.outerHTML='<div style=\'width:150px;height:150px;border:2px dashed #cbd5e1;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#94a3b8;margin:0 auto;text-align:center;line-height:1.5\'>Add<br>mobilepay-qr.png<br>to images/</div>'">
+                </div>
+                <p style="font-size:13px;text-align:center;margin-bottom:6px">
+                  Or open directly in the app:<br>
+                  <!-- Replace YOUR_MOBILEPAY_LINK with your real MobilePay link -->
+                  <a href="YOUR_MOBILEPAY_LINK" id="mobilepayLink" target="_blank"
+                    style="color:var(--brand);font-weight:700">Open MobilePay &rarr;</a>
+                </p>
+                <div class="copy-link-row">
+                  <input type="text" id="mobilepayLinkInput" value="YOUR_MOBILEPAY_LINK" readonly>
+                  <button onclick="copyText('mobilepayLinkInput', this)">Copy link</button>
+                </div>
+                <p style="font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.6">
+                  Send the exact total shown above. Use your name as the payment reference.<br>
+                  After paying, email <a href="mailto:info@onlineshowsuomi.fi" style="color:var(--brand)">info@onlineshowsuomi.fi</a> with your payment screenshot.
+                </p>
+              </div>
 
-            <button id="checkoutBtn" class="btn btn-primary btn-full" style="padding:13px;font-size:15px">
-              Proceed to payment →
-            </button>
+              <!-- Bank Transfer -->
+              <div class="pay-method-panel" id="pm_bank" onclick="selectMethod('bank')">
+                <input type="radio" name="pm" value="bank">
+                <div>
+                  <div class="pay-method-label">&#127981; Bank Transfer</div>
+                  <div class="pay-method-sub">Pay directly to our bank account</div>
+                </div>
+              </div>
+              <div class="pay-details-box" id="details_bank">
+                <div style="font-size:13px;font-weight:700;margin-bottom:10px">Bank transfer details</div>
+                <table class="bank-table" style="width:100%;border-collapse:collapse">
+                  <tr><td>Account name</td><td>Online Show Suomi Oy</td></tr>
+                  <tr><td>IBAN</td><td>FI00 0000 0000 0000 00</td></tr>
+                  <tr><td>BIC / SWIFT</td><td>XXXXXXXX</td></tr>
+                  <tr><td>Reference</td><td id="bankRef">Your name + show name</td></tr>
+                  <tr><td>Amount</td><td id="bankAmount">see total above</td></tr>
+                </table>
+                <p style="font-size:11px;color:var(--text-muted);margin-top:10px;line-height:1.6">
+                  After transferring, email <a href="mailto:info@onlineshowsuomi.fi" style="color:var(--brand)">info@onlineshowsuomi.fi</a> with your transaction receipt so we can confirm your entry.
+                </p>
+              </div>
 
-            <p style="font-size:12px;color:var(--text-muted);text-align:center;margin-top:12px">
-              💡 Pet entry details and photos are submitted via the entry form on each class page.<br>
-              Payment completes your registration.
-            </p>
+            </div><!-- /payment method -->
 
-            <p style="font-size:12px;color:var(--text-subtle);text-align:center;margin-top:12px">
-              🔒 Secure checkout &middot; €5 per class entry
+            <div id="checkoutError" style="font-size:13px;color:#dc2626;margin-top:8px;display:none;padding:10px 12px;background:#fef2f2;border-radius:8px"></div>
+
+            <p style="font-size:11px;color:var(--text-subtle);text-align:center;margin-top:16px">
+              &#128274; Secure checkout &middot; All fees non-refundable &middot;
+              <a href="payment-policy.html" style="color:var(--brand)">Payment policy</a>
             </p>
           </div>
         </div>
 
-      </div>
+      </div><!-- /cart layout -->
     </div>
   </main>
 
@@ -160,25 +238,59 @@
       </div>
       <div class="footer-bottom">
         <span>© 2026 Online Show Suomi Oy. All rights reserved.</span>
-        <span>Made in Helsinki 🇫🇮 · For pet owners, by pet owners</span>
+        <span>Made in Helsinki &#127467;&#127470; &middot; For pet owners, by pet owners</span>
       </div>
     </div>
   </footer>
+
+  <!--
+    PayPal SDK — STEP: replace YOUR_PAYPAL_CLIENT_ID with your real client ID from
+    https://developer.paypal.com/developer/applications (use the LIVE client ID)
+  -->
+  <script
+    src="https://www.paypal.com/sdk/js?client-id=YOUR_PAYPAL_CLIENT_ID&currency=EUR&intent=capture"
+    onerror="onPayPalLoadError()">
+  </script>
 
   <script src="js/data.js"></script>
   <script src="js/cart.js"></script>
   <script src="js/nav.js"></script>
   <script>
-    var STRIPE_PAYMENT_LINK = 'https://buy.stripe.com/YOUR_LINK_HERE';
-
     function esc(str) {
       return String(str || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
+    /* ── Payment method toggle ── */
+    function selectMethod(m) {
+      ['paypal', 'mobilepay', 'bank'].forEach(function (id) {
+        var panel   = document.getElementById('pm_' + id);
+        var details = document.getElementById('details_' + id);
+        var radio   = panel ? panel.querySelector('input') : null;
+        var active  = id === m;
+        if (radio) radio.checked = active;
+        if (panel)   panel.classList.toggle('selected', active);
+        if (details) details.classList.toggle('active', active);
+      });
+    }
+
+    function copyText(inputId, btn) {
+      var inp = document.getElementById(inputId);
+      if (!inp) return;
+      inp.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      var orig = btn.textContent;
+      btn.textContent = 'Copied!';
+      setTimeout(function () { btn.textContent = orig; }, 2000);
+    }
+
+    function onPayPalLoadError() {
+      var c = document.getElementById('paypal-button-container');
+      if (c) c.innerHTML = '<p style="font-size:12px;color:#dc2626;text-align:center;padding:8px 0">PayPal not configured yet.<br>Please use MobilePay or bank transfer.</p>';
+    }
+
+    /* ── Render cart ── */
     function renderCartPage() {
       var items      = Cart.getItems();
       var emptyState = document.getElementById('emptyState');
@@ -198,21 +310,20 @@
 
       itemsList.innerHTML = items.map(function (item) {
         var thumb = item.photoData
-          ? '<img class="cart-item-thumb" src="' + item.photoData + '" alt="Entry photo" onerror="this.style.background=\'var(--bg-muted)\';this.removeAttribute(\'src\')">'
-          : '<div class="cart-item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--bg-muted)">⭐</div>';
-
+          ? '<img class="cart-item-thumb" src="' + item.photoData + '" alt="Entry photo">'
+          : '<div class="cart-item-thumb" style="display:flex;align-items:center;justify-content:center;font-size:28px;background:var(--bg-muted)">&#128247;</div>';
         return (
           '<div class="cart-item">' +
             thumb +
             '<div class="cart-item-info">' +
               '<div class="cart-item-name">' + esc(item.className || 'Class entry') + '</div>' +
               '<div class="cart-item-sub">' + esc(item.competitionName || '') + '</div>' +
-              '<div class="cart-item-sub">⭐ ' + esc(item.horseName || '') + ' &middot; ' + esc(item.riderName || '') + '</div>' +
-              '<div class="cart-item-price">€' + (Number(item.priceEur) || 5).toFixed(2) + '</div>' +
+              '<div class="cart-item-sub">&#128062; ' + esc(item.horseName || '') + ' &middot; ' + esc(item.riderName || '') + '</div>' +
+              '<div class="cart-item-price">&euro;' + (Number(item.priceEur) || 5).toFixed(2) + '</div>' +
             '</div>' +
             '<button onclick="removeAndRefresh(\'' + esc(item.cartId) + '\')" ' +
               'style="background:none;border:none;cursor:pointer;color:var(--text-subtle);font-size:18px;padding:4px;flex-shrink:0;align-self:flex-start" ' +
-              'title="Remove entry">✕</button>' +
+              'title="Remove">&#x2715;</button>' +
           '</div>'
         );
       }).join('');
@@ -220,47 +331,76 @@
       orderLines.innerHTML = items.map(function (item) {
         return (
           '<div class="order-line">' +
-            '<span style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' +
-              esc(item.className || 'Entry') +
-            '</span>' +
-            '<span>€' + (Number(item.priceEur) || 5).toFixed(2) + '</span>' +
+            '<span style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(item.className || 'Entry') + '</span>' +
+            '<span>&euro;' + (Number(item.priceEur) || 5).toFixed(2) + '</span>' +
           '</div>'
         );
       }).join('');
 
-      if (totalEl) totalEl.textContent = '€' + Cart.getTotal().toFixed(2);
+      var total = Cart.getTotal();
+      if (totalEl) totalEl.textContent = '€' + total.toFixed(2);
+
+      /* Update bank transfer helper fields */
+      var firstItem = items[0];
+      var refEl   = document.getElementById('bankRef');
+      var amtEl   = document.getElementById('bankAmount');
+      if (refEl && firstItem) refEl.textContent = (firstItem.riderName || 'Your name') + ' / ' + (firstItem.competitionName || 'show');
+      if (amtEl) amtEl.textContent = '€' + total.toFixed(2);
+
+      /* Render PayPal buttons once items exist */
+      initPayPal(items, total);
     }
 
     function removeAndRefresh(cartId) {
       Cart.removeItem(cartId);
+      document.getElementById('paypal-button-container').innerHTML = '';
       renderCartPage();
     }
 
-    document.getElementById('checkoutBtn').addEventListener('click', function () {
-      var items   = Cart.getItems();
-      var errorEl = document.getElementById('checkoutError');
-      errorEl.style.display = 'none';
+    /* ── PayPal buttons ── */
+    function initPayPal(items, total) {
+      var container = document.getElementById('paypal-button-container');
+      if (!container || container.hasChildNodes()) return;
+      if (typeof paypal === 'undefined') { onPayPalLoadError(); return; }
+      if (!items || items.length === 0) return;
 
-      if (items.length === 0) {
-        errorEl.textContent = 'Your cart is empty.';
-        errorEl.style.display = 'block';
-        return;
-      }
+      paypal.Buttons({
+        style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal', height: 45 },
 
-      var method = document.querySelector('input[name="paymentMethod"]:checked').value;
-      if (method === 'mobilepay') {
-        window.location.href = 'mobilepay.html';
-        return;
-      }
-      // Card payment
-      if (STRIPE_PAYMENT_LINK.indexOf('YOUR_LINK_HERE') !== -1) {
-        var errEl = document.getElementById('checkoutError');
-        errEl.textContent = 'Card payment is not yet configured. Please use MobilePay or email info@onlineshowsuomi.fi to arrange payment.';
-        errEl.style.display = 'block';
-        return;
-      }
-      window.location.href = STRIPE_PAYMENT_LINK;
-    });
+        createOrder: function (data, actions) {
+          return actions.order.create({
+            purchase_units: [{
+              description: 'Online Show Suomi entries',
+              amount: {
+                currency_code: 'EUR',
+                value: total.toFixed(2),
+                breakdown: { item_total: { currency_code: 'EUR', value: total.toFixed(2) } }
+              },
+              items: items.map(function (item) {
+                return {
+                  name: (item.className || 'Entry').substring(0, 127),
+                  unit_amount: { currency_code: 'EUR', value: (Number(item.priceEur) || 5).toFixed(2) },
+                  quantity: '1'
+                };
+              })
+            }]
+          });
+        },
+
+        onApprove: function (data, actions) {
+          return actions.order.capture().then(function () {
+            Cart.clearCart();
+            window.location.href = 'success.html';
+          });
+        },
+
+        onError: function () {
+          var errEl = document.getElementById('checkoutError');
+          errEl.textContent = 'Payment failed or was cancelled. Please try again or choose another method.';
+          errEl.style.display = 'block';
+        }
+      }).render('#paypal-button-container');
+    }
 
     renderCartPage();
   </script>

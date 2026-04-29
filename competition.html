@@ -8,6 +8,50 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/style.css">
+  <style>
+    .entry-modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+      z-index: 1000; display: flex; align-items: center; justify-content: center;
+      padding: 16px;
+    }
+    .entry-modal {
+      background: #fff; border-radius: 16px; width: 100%; max-width: 540px;
+      max-height: 92vh; overflow-y: auto; box-shadow: 0 24px 64px rgba(0,0,0,0.2);
+    }
+    .entry-modal-header {
+      padding: 24px 24px 0;
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .entry-modal-body { padding: 20px 24px 28px; }
+    .form-group { margin-bottom: 16px; }
+    .form-label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 6px; }
+    .form-label span { color: #dc2626; }
+    .form-input {
+      width: 100%; padding: 10px 12px; border: 1.5px solid var(--border);
+      border-radius: 8px; font-size: 14px; font-family: inherit;
+      transition: border-color 0.15s; box-sizing: border-box;
+    }
+    .form-input:focus { outline: none; border-color: var(--brand); }
+    .form-input.invalid { border-color: #dc2626; }
+    .photo-upload-zone {
+      border: 2px dashed var(--border); border-radius: 10px;
+      padding: 28px 16px; text-align: center; cursor: pointer;
+      transition: border-color 0.15s, background 0.15s; position: relative;
+      background: var(--bg-muted);
+    }
+    .photo-upload-zone:hover { border-color: var(--brand); background: var(--brand-pale); }
+    .photo-upload-zone input[type=file] {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;
+    }
+    .photo-preview { margin-top: 12px; border-radius: 8px; overflow: hidden; max-height: 180px; display: none; }
+    .photo-preview img { width: 100%; height: 180px; object-fit: cover; display: block; }
+    .entry-success { text-align: center; padding: 40px 28px; }
+    .entry-success-icon { font-size: 52px; margin-bottom: 12px; }
+    .entry-success h2 { font-size: 20px; font-weight: 800; margin-bottom: 10px; }
+    .entry-success p { color: var(--text-muted); font-size: 14px; line-height: 1.7; }
+    .form-error { font-size: 12px; color: #dc2626; margin-top: 4px; display: none; }
+    .submit-error { font-size: 13px; color: #dc2626; margin-bottom: 12px; display: none; padding: 10px 12px; background: #fef2f2; border-radius: 8px; }
+  </style>
 </head>
 <body>
 
@@ -44,6 +88,13 @@
     </div>
     <div id="drawerItems" style="flex:1;overflow-y:auto;padding:16px"></div>
     <div id="drawerFooter" style="padding:20px;border-top:1px solid var(--border)"></div>
+  </div>
+
+  <!-- ENTRY MODAL -->
+  <div class="entry-modal-overlay" id="entryModalOverlay" style="display:none" onclick="overlayClick(event)">
+    <div class="entry-modal" id="entryModal">
+      <div id="entryModalInner"></div>
+    </div>
   </div>
 
   <main>
@@ -99,44 +150,209 @@
   <script src="js/cart.js"></script>
   <script src="js/nav.js"></script>
   <script>
-    // Configurable Tally form URL — user should replace with their own Tally.so form URL
-    // Create a free form at https://tally.so with fields: Rider name, Horse name, Horse age, Phone, Address, Photo upload
-    var TALLY_FORM_URL = 'https://tally.so/r/REPLACE_WITH_YOUR_FORM_ID';
-
-    function openEntry(comp, cls) {
-      // Build Tally URL with pre-filled hidden fields
-      var params = new URLSearchParams({
-        competition: comp.name,
-        class: cls.name,
-        price: '€5.00'
-      });
-      var url = TALLY_FORM_URL + '?' + params.toString();
-      window.open(url, '_blank');
-    }
+    var _currentComp = null;
+    var _currentCls  = null;
+    var _photoBase64 = null;
 
     function esc(str) {
       return String(str || '')
-        .replace(/&/g, '&amp;')
-        .replace(/</g, '&lt;')
-        .replace(/>/g, '&gt;')
-        .replace(/"/g, '&quot;');
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    // Load competition
+    function overlayClick(e) {
+      if (e.target === document.getElementById('entryModalOverlay')) closeEntryModal();
+    }
+
+    function closeEntryModal() {
+      document.getElementById('entryModalOverlay').style.display = 'none';
+      document.body.style.overflow = '';
+      _photoBase64 = null;
+    }
+
+    function openEntry(comp, cls) {
+      _currentComp = comp;
+      _currentCls  = cls;
+      _photoBase64 = null;
+      var fee = cls.entryFee ? '&euro;' + Number(cls.entryFee).toFixed(2) : '&euro;5.00';
+
+      document.getElementById('entryModalInner').innerHTML =
+        '<div class="entry-modal-header">' +
+          '<div>' +
+            '<div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:4px">' + esc(comp.name) + '</div>' +
+            '<div style="font-size:18px;font-weight:800">' + esc(cls.name) + '</div>' +
+          '</div>' +
+          '<button onclick="closeEntryModal()" style="background:none;border:none;cursor:pointer;font-size:22px;color:var(--text-muted);padding:0 0 0 16px;flex-shrink:0">&#x2715;</button>' +
+        '</div>' +
+        '<div class="entry-modal-body">' +
+          '<p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6">' + esc(cls.description || '') + '</p>' +
+
+          '<div class="form-group">' +
+            '<label class="form-label">Your full name <span>*</span></label>' +
+            '<input class="form-input" id="ef_name" type="text" placeholder="e.g. Anna Mäkinen" autocomplete="name">' +
+            '<div class="form-error" id="ef_name_err">Please enter your name.</div>' +
+          '</div>' +
+
+          '<div class="form-group">' +
+            '<label class="form-label">Pet\'s name <span>*</span></label>' +
+            '<input class="form-input" id="ef_petname" type="text" placeholder="e.g. Bella">' +
+            '<div class="form-error" id="ef_petname_err">Please enter your pet\'s name.</div>' +
+          '</div>' +
+
+          '<div class="form-group">' +
+            '<label class="form-label">Pet\'s age <span>*</span></label>' +
+            '<input class="form-input" id="ef_petage" type="text" placeholder="e.g. 3 years">' +
+            '<div class="form-error" id="ef_petage_err">Please enter your pet\'s age.</div>' +
+          '</div>' +
+
+          '<div class="form-group">' +
+            '<label class="form-label">Phone / WhatsApp <span>*</span></label>' +
+            '<input class="form-input" id="ef_phone" type="tel" placeholder="e.g. +358 40 123 4567" autocomplete="tel">' +
+            '<div class="form-error" id="ef_phone_err">Please enter a phone number.</div>' +
+          '</div>' +
+
+          '<div class="form-group">' +
+            '<label class="form-label">Postal address for rosette delivery <span>*</span></label>' +
+            '<textarea class="form-input" id="ef_address" rows="2" placeholder="Street, city, postcode, country" style="resize:vertical"></textarea>' +
+            '<div class="form-error" id="ef_address_err">Please enter your postal address.</div>' +
+          '</div>' +
+
+          '<div class="form-group">' +
+            '<label class="form-label">Entry photo <span>*</span></label>' +
+            '<div class="photo-upload-zone" id="photoZone">' +
+              '<input type="file" id="ef_photo" accept="image/jpeg,image/png,image/webp" onchange="handlePhoto(this)">' +
+              '<div id="photoZoneText">' +
+                '<div style="font-size:28px;margin-bottom:8px">&#128247;</div>' +
+                '<div style="font-size:14px;font-weight:600;color:var(--text)">Click to upload your photo</div>' +
+                '<div style="font-size:12px;color:var(--text-muted);margin-top:4px">JPG or PNG &middot; max 10 MB</div>' +
+              '</div>' +
+            '</div>' +
+            '<div class="photo-preview" id="photoPreview"><img id="photoPreviewImg" src="" alt="Preview"></div>' +
+            '<div class="form-error" id="ef_photo_err">Please upload your entry photo.</div>' +
+          '</div>' +
+
+          '<div class="submit-error" id="ef_submit_err"></div>' +
+
+          '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:8px;padding-top:16px;border-top:1px solid var(--border);gap:12px">' +
+            '<div>' +
+              '<div style="font-size:12px;color:var(--text-muted)">Entry fee</div>' +
+              '<div style="font-size:20px;font-weight:800;color:var(--brand)">' + fee + '</div>' +
+            '</div>' +
+            '<button class="btn btn-primary" id="ef_submit_btn" onclick="submitEntry()" style="padding:12px 24px;font-size:15px">Add to cart &rarr;</button>' +
+          '</div>' +
+          '<p style="font-size:11px;color:var(--text-subtle);margin-top:12px;text-align:center">By submitting you agree to our <a href="payment-policy.html" style="color:var(--brand)">payment policy</a>. All entry fees are non-refundable.</p>' +
+        '</div>';
+
+      document.getElementById('entryModalOverlay').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function handlePhoto(input) {
+      var file = input.files[0];
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) {
+        showErr('ef_photo_err', 'Photo must be under 10 MB.'); return;
+      }
+      var reader = new FileReader();
+      reader.onload = function (e) {
+        _photoBase64 = e.target.result;
+        var preview = document.getElementById('photoPreview');
+        document.getElementById('photoPreviewImg').src = _photoBase64;
+        preview.style.display = 'block';
+        document.getElementById('photoZoneText').innerHTML =
+          '<div style="font-size:13px;font-weight:600;color:var(--brand)">&#10003; ' + esc(file.name) + '</div>';
+        hideErr('ef_photo_err');
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function showErr(id, msg) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      if (msg) el.textContent = msg;
+      el.style.display = 'block';
+      var inp = document.getElementById(id.replace('_err', ''));
+      if (inp) inp.classList.add('invalid');
+    }
+    function hideErr(id) {
+      var el = document.getElementById(id);
+      if (el) el.style.display = 'none';
+      var inp = document.getElementById(id.replace('_err', ''));
+      if (inp) inp.classList.remove('invalid');
+    }
+
+    function submitEntry() {
+      var name    = (document.getElementById('ef_name').value    || '').trim();
+      var petname = (document.getElementById('ef_petname').value || '').trim();
+      var petage  = (document.getElementById('ef_petage').value  || '').trim();
+      var phone   = (document.getElementById('ef_phone').value   || '').trim();
+      var address = (document.getElementById('ef_address').value || '').trim();
+      var valid = true;
+
+      [['ef_name', name, 'Please enter your name.'],
+       ['ef_petname', petname, "Please enter your pet's name."],
+       ['ef_petage', petage, "Please enter your pet's age."],
+       ['ef_phone', phone, 'Please enter a phone number.'],
+       ['ef_address', address, 'Please enter your postal address.']
+      ].forEach(function (r) {
+        if (!r[1]) { showErr(r[0] + '_err', r[2]); valid = false; }
+        else hideErr(r[0] + '_err');
+      });
+
+      if (!_photoBase64) { showErr('ef_photo_err', 'Please upload your entry photo.'); valid = false; }
+      else hideErr('ef_photo_err');
+      if (!valid) return;
+
+      var btn = document.getElementById('ef_submit_btn');
+      btn.disabled = true;
+      btn.textContent = 'Adding…';
+
+      Cart.addItem({
+        competitionId:   _currentComp.id,
+        competitionName: _currentComp.name,
+        classId:         _currentCls.id,
+        className:       _currentCls.name,
+        riderName:       name,
+        horseName:       petname,
+        horseAge:        petage,
+        phone:           phone,
+        address:         address,
+        photoData:       _photoBase64,
+        priceEur:        _currentCls.entryFee ? Number(_currentCls.entryFee) : 5
+      });
+
+      document.getElementById('entryModalInner').innerHTML =
+        '<div class="entry-success">' +
+          '<div class="entry-success-icon">&#9989;</div>' +
+          '<h2>Entry Recorded</h2>' +
+          '<p>Your entry has been successfully received and is now under review.<br><br>' +
+          'You will be notified by email once your photo has been approved and added to the competition gallery.<br><br>' +
+          'Please proceed to checkout to complete your payment and secure your place in the show.<br><br>' +
+          '<strong>' + esc(_currentCls.name) + '</strong><br>' +
+          '<span style="color:var(--text-muted)">' + esc(_currentComp.name) + '</span></p>' +
+          '<div style="display:flex;gap:12px;justify-content:center;margin-top:28px;flex-wrap:wrap">' +
+            '<button class="btn btn-secondary" onclick="closeEntryModal()">Continue browsing</button>' +
+            '<a href="cart.html" class="btn btn-primary">Go to checkout &rarr;</a>' +
+          '</div>' +
+        '</div>';
+
+      document.body.style.overflow = '';
+    }
+
     (async function () {
       var params  = new URLSearchParams(location.search);
       var id      = params.get('id');
       var content = document.getElementById('pageContent');
 
       if (!id) {
-        content.innerHTML = '<div class="empty-state"><div class="empty-icon">🔍</div><h2>No competition specified</h2><p>Please browse our shows to find a competition.</p><a href="competitions.html" class="btn btn-primary">Browse shows</a></div>';
+        content.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128269;</div><h2>No competition specified</h2><p>Please browse our shows to find a competition.</p><a href="competitions.html" class="btn btn-primary">Browse shows</a></div>';
         return;
       }
 
       try {
         var comp = await DataService.getCompetition(id);
         if (!comp) {
-          content.innerHTML = '<div class="empty-state"><div class="empty-icon">😕</div><h2>Competition not found</h2><p>This show may have been removed or the link is incorrect.</p><a href="competitions.html" class="btn btn-primary">Browse shows</a></div>';
+          content.innerHTML = '<div class="empty-state"><div class="empty-icon">&#128533;</div><h2>Competition not found</h2><p>This show may have been removed or the link is incorrect.</p><a href="competitions.html" class="btn btn-primary">Browse shows</a></div>';
           return;
         }
 
@@ -154,57 +370,49 @@
           if (comp.status === 'open') {
             var compJson = JSON.stringify(comp).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
             var clsJson  = JSON.stringify(cls).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+            var feeLabel = cls.entryFee ? '&euro;' + Number(cls.entryFee).toFixed(2) : '&euro;5.00';
             actionHtml =
-              '<button class="btn btn-primary btn-full" onclick="openEntry(' + compJson + ',' + clsJson + ')">Enter this class →</button>' +
-              '<p style="font-size:11px;color:var(--text-subtle);margin-top:8px;text-align:center">Form opens in new tab · photo upload included</p>';
+              '<button class="btn btn-primary btn-full" onclick="openEntry(' + compJson + ',' + clsJson + ')">Enter this class &rarr;</button>' +
+              '<p style="font-size:11px;color:var(--text-subtle);margin-top:6px;text-align:center">' + feeLabel + ' &middot; fill in details &amp; upload photo</p>';
           } else if (comp.status === 'completed') {
             var winnerHtml = cls.winner
-              ? '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:10px 12px;background:var(--brand-pale);border-radius:var(--r-sm)">' +
-                  '<span style="font-size:16px">🏆</span>' +
-                  '<span style="font-size:13px;font-weight:600;color:var(--brand)">Winner on file</span>' +
-                '</div>'
+              ? '<div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;padding:10px 12px;background:var(--brand-pale);border-radius:var(--r-sm)"><span style="font-size:16px">&#127942;</span><span style="font-size:13px;font-weight:600;color:var(--brand)">Winner on file</span></div>'
               : '';
             actionHtml = winnerHtml +
-              '<a href="class.html?competition=' + encodeURIComponent(comp.id) + '&class=' + encodeURIComponent(cls.id) + '" class="btn btn-secondary btn-full">View results →</a>';
+              '<a href="class.html?competition=' + encodeURIComponent(comp.id) + '&class=' + encodeURIComponent(cls.id) + '" class="btn btn-secondary btn-full">View results &rarr;</a>';
           } else {
             actionHtml = '<div class="btn btn-full" style="background:var(--bg-muted);color:var(--text-muted);border-color:var(--border);cursor:default">Entries open soon</div>';
           }
 
           return (
-            '<div class="class-card">' +
-              '<div class="class-card-body">' +
-                '<div class="class-card-name">' + esc(cls.name) + '</div>' +
-                '<div class="class-card-desc">' + esc(cls.description || '') + '</div>' +
-                actionHtml +
-              '</div>' +
-            '</div>'
+            '<div class="class-card"><div class="class-card-body">' +
+              '<div class="class-card-name">' + esc(cls.name) + '</div>' +
+              '<div class="class-card-desc">' + esc(cls.description || '') + '</div>' +
+              actionHtml +
+            '</div></div>'
           );
         }).join('');
 
         content.innerHTML =
-          '<div class="breadcrumb">' +
-            '<a href="competitions.html">Shows</a>' +
-            '<span class="breadcrumb-sep">/</span>' +
-            '<span>' + esc(comp.name) + '</span>' +
-          '</div>' +
+          '<div class="breadcrumb"><a href="competitions.html">Shows</a><span class="breadcrumb-sep">/</span><span>' + esc(comp.name) + '</span></div>' +
           '<div style="margin-bottom:40px">' +
             '<div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;flex-wrap:wrap">' +
               statusBadge +
-              (comp.closingDate ? '<span style="font-size:13px;color:var(--text-muted)">Closes ' + esc(comp.closingDate) + '</span>' : '') +
+              (comp.closingDate ? '<span style="font-size:13px;color:var(--text-muted)">Entries close 31 May 2026</span>' : '') +
             '</div>' +
             '<h1 style="font-size:32px;font-weight:800;margin-bottom:12px">' + esc(comp.name) + '</h1>' +
             '<p style="font-size:16px;color:var(--text-muted);line-height:1.7;max-width:680px;margin-bottom:20px">' + esc(comp.description || '') + '</p>' +
             '<div style="display:flex;gap:24px;flex-wrap:wrap">' +
-              '<span style="font-size:14px;color:var(--text-muted)">📅 ' + esc(comp.date || '') + '</span>' +
-              '<span style="font-size:14px;color:var(--text-muted)">🏆 ' + classCount + ' class' + (classCount !== 1 ? 'es' : '') + '</span>' +
-              (comp.status === 'open' ? '<span style="font-size:14px;color:var(--brand);font-weight:600">€5 per class entry</span>' : '') +
+              '<span style="font-size:14px;color:var(--text-muted)">&#128197; ' + esc(comp.date || '') + '</span>' +
+              '<span style="font-size:14px;color:var(--text-muted)">&#127942; ' + classCount + ' class' + (classCount !== 1 ? 'es' : '') + '</span>' +
+              (comp.status === 'open' ? '<span style="font-size:14px;color:var(--brand);font-weight:600">&euro;5 per class &middot; Grand Prix &euro;10</span>' : '') +
             '</div>' +
           '</div>' +
           '<h2 style="font-size:20px;font-weight:700;margin-bottom:20px">Classes</h2>' +
           '<div class="grid-3">' + classesHtml + '</div>';
 
       } catch (err) {
-        content.innerHTML = '<div class="empty-state"><div class="empty-icon">⚠️</div><h2>Failed to load</h2><p>Please refresh the page.</p></div>';
+        content.innerHTML = '<div class="empty-state"><div class="empty-icon">&#9888;&#65039;</div><h2>Failed to load</h2><p>Please refresh the page.</p></div>';
       }
     })();
   </script>
