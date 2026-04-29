@@ -154,6 +154,10 @@
     var _currentCls  = null;
     var _photoBase64 = null;
 
+    /* Lookup maps filled once the competition loads */
+    var _compData  = null;
+    var _classMap  = {};
+
     function esc(str) {
       return String(str || '')
         .replace(/&/g, '&amp;').replace(/</g, '&lt;')
@@ -168,6 +172,12 @@
       document.getElementById('entryModalOverlay').style.display = 'none';
       document.body.style.overflow = '';
       _photoBase64 = null;
+    }
+
+    /* Called from onclick with only the class ID — safe, no JSON in HTML */
+    function openEntryById(classId) {
+      if (!_compData || !_classMap[classId]) return;
+      openEntry(_compData, _classMap[classId]);
     }
 
     function openEntry(comp, cls) {
@@ -365,14 +375,18 @@
 
         var classCount = (comp.classes || []).length;
 
+        /* Store comp and build class lookup so onclick only needs an ID */
+        _compData = comp;
+        (comp.classes || []).forEach(function (cl) { _classMap[cl.id] = cl; });
+
         var classesHtml = (comp.classes || []).map(function (cls) {
           var actionHtml = '';
           if (comp.status === 'open') {
-            var compJson = JSON.stringify(comp).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-            var clsJson  = JSON.stringify(cls).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
             var feeLabel = cls.entryFee ? '&euro;' + Number(cls.entryFee).toFixed(2) : '&euro;5.00';
+            /* Pass only the class ID — avoids JSON/quote injection in onclick */
+            var safeId = cls.id.replace(/'/g, '');
             actionHtml =
-              '<button class="btn btn-primary btn-full" onclick="openEntry(' + compJson + ',' + clsJson + ')">Enter this class &rarr;</button>' +
+              '<button class="btn btn-primary btn-full" onclick="openEntryById(\'' + safeId + '\')">Enter this class &rarr;</button>' +
               '<p style="font-size:11px;color:var(--text-subtle);margin-top:6px;text-align:center">' + feeLabel + ' &middot; fill in details &amp; upload photo</p>';
           } else if (comp.status === 'completed') {
             var winnerHtml = cls.winner
