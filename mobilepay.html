@@ -116,8 +116,16 @@
         <div class="mobilepay-step">
           <div class="mobilepay-num">4</div>
           <div class="mobilepay-step-content">
-            <h3>Email confirmation within 24 hours</h3>
-            <p>Once we verify your payment we will send a confirmation email. Your entries will be registered and judged after payment is confirmed. Results are typically published within 2–4 weeks of the show's closing date.</p>
+            <h3>Confirm you've sent the payment</h3>
+            <p>Once you've sent the money in MobilePay, tap the button below. We'll receive your entry details and verify the payment manually before registering you.</p>
+            <div style="margin-top:16px">
+              <button id="confirmMobilePayBtn" class="btn btn-primary" onclick="confirmMobilePayment()" style="padding:12px 24px;font-size:15px">
+                I've sent the MobilePay payment &rarr;
+              </button>
+              <div id="mobilePayConfirmMsg" style="display:none;margin-top:12px;padding:14px 16px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:var(--r-md);font-size:14px;color:#166534">
+                ✓ We've received your entry details. We'll verify your MobilePay payment and register you within 24 hours.
+              </div>
+            </div>
           </div>
         </div>
 
@@ -138,6 +146,9 @@
 
     </div>
   </main>
+
+  <!-- EmailJS -->
+  <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
   <!-- FOOTER -->
   <footer class="footer">
@@ -184,6 +195,58 @@
   <script src="js/cart.js"></script>
   <script src="js/nav.js"></script>
   <script>
+    var EMAILJS_SERVICE_ID  = 'service_z7leh4c';
+    var EMAILJS_TEMPLATE_ID = 'template_1frqubw';
+    var EMAILJS_PUBLIC_KEY  = 'MILTTBcjBQHqAVc1j';
+
+    function sendEntryEmail(items, total, paymentRef, paymentMethod) {
+      if (typeof emailjs === 'undefined') return;
+      var feeStr = (total === 0) ? 'Free' : ('€' + total.toFixed(2));
+      var method = paymentMethod || 'MOBILEPAY';
+      var actionNote = 'ACTION REQUIRED: Check your MobilePay app to verify this payment before registering the entry.';
+      var lines = items.map(function (item, i) {
+        var itemFee = (item.priceEur != null && Number(item.priceEur) === 0)
+          ? 'Free'
+          : '€' + (item.priceEur != null ? Number(item.priceEur) : 5).toFixed(2);
+        return (
+          '=== Entry ' + (i + 1) + ' of ' + items.length + ' ===\n' +
+          'Competition : ' + (item.competitionName || '') + '\n' +
+          'Class       : ' + (item.className       || '') + '\n' +
+          'Entry fee   : ' + itemFee + '\n' +
+          '--- Competitor details ---\n' +
+          'Full name   : ' + (item.riderName || '') + '\n' +
+          'Pet name    : ' + (item.horseName || '') + '\n' +
+          'Pet age     : ' + (item.horseAge  || '') + '\n' +
+          'Phone       : ' + (item.phone     || '') + '\n' +
+          'Address     : ' + (item.address   || '')
+        );
+      }).join('\n\n');
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email:       'iblybibly@hotmail.com',
+        subject:        '[AWAITING MOBILEPAY] New entry — ' + items.length + ' class' + (items.length !== 1 ? 'es' : ''),
+        payment_method: method,
+        payment_ref:    paymentRef || 'n/a',
+        total:          feeStr,
+        action_note:    actionNote,
+        entry_count:    String(items.length),
+        entries:        lines
+      });
+    }
+
+    function confirmMobilePayment() {
+      var btn = document.getElementById('confirmMobilePayBtn');
+      var msg = document.getElementById('mobilePayConfirmMsg');
+      var items = Cart.getItems();
+      var total = Cart.getTotal();
+      if (items.length === 0) return;
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
+      sendEntryEmail(items, total, 'MOBILEPAY-PENDING', 'MOBILEPAY');
+      Cart.clearCart();
+      if (btn) btn.style.display = 'none';
+      if (msg) msg.style.display = 'block';
+    }
+
     function esc(str) {
       return String(str || '')
         .replace(/&/g, '&amp;')

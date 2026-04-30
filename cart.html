@@ -208,11 +208,22 @@
         .replace(/>/g, '&gt;').replace(/"/g, '&quot;');
     }
 
-    function sendEntryEmail(items, total, paypalOrderId) {
+    function sendEntryEmail(items, total, paymentRef, paymentMethod) {
       if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID') return;
       if (typeof emailjs === 'undefined') return;
 
-      var feeStr = (total === 0) ? 'Free' : ('€' + total.toFixed(2));
+      var feeStr  = (total === 0) ? 'Free' : ('€' + total.toFixed(2));
+      var method  = paymentMethod || 'PAYPAL';
+
+      var subjectPrefix = (total === 0)
+        ? '[FREE]'
+        : (method === 'MOBILEPAY' ? '[AWAITING MOBILEPAY]' : '[PAID ' + feeStr + ']');
+
+      var actionNote = (total === 0)
+        ? 'No payment required — register the entry directly.'
+        : (method === 'MOBILEPAY'
+          ? 'ACTION REQUIRED: Check your MobilePay app to verify this payment before registering the entry.'
+          : 'Payment confirmed via PayPal. Safe to register the entry.');
 
       var lines = items.map(function (item, i) {
         var itemFee = (item.priceEur != null && Number(item.priceEur) === 0)
@@ -222,7 +233,7 @@
           '=== Entry ' + (i + 1) + ' of ' + items.length + ' ===\n' +
           'Competition : ' + (item.competitionName || '') + '\n' +
           'Class       : ' + (item.className       || '') + '\n' +
-          'Entry fee   : ' + itemFee                       + '\n' +
+          'Entry fee   : ' + itemFee + '\n' +
           '--- Competitor details ---\n' +
           'Full name   : ' + (item.riderName || '') + '\n' +
           'Pet name    : ' + (item.horseName || '') + '\n' +
@@ -234,12 +245,14 @@
 
       emailjs.init(EMAILJS_PUBLIC_KEY);
       emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
-        to_email:    'iblybibly@hotmail.com',
-        subject:     'New entry — ' + feeStr + ' — ' + items.length + ' class' + (items.length !== 1 ? 'es' : ''),
-        paypal_id:   paypalOrderId || 'n/a',
-        total:       feeStr,
-        entry_count: String(items.length),
-        entries:     lines
+        to_email:       'iblybibly@hotmail.com',
+        subject:        subjectPrefix + ' New entry — ' + items.length + ' class' + (items.length !== 1 ? 'es' : ''),
+        payment_method: method,
+        payment_ref:    paymentRef || 'n/a',
+        total:          feeStr,
+        action_note:    actionNote,
+        entry_count:    String(items.length),
+        entries:        lines
       });
     }
 
@@ -317,7 +330,7 @@
 
     function completeFreeOrder() {
       var items = Cart.getItems();
-      sendEntryEmail(items, 0, 'FREE');
+      sendEntryEmail(items, 0, 'FREE', 'FREE');
       Cart.clearCart();
       window.location.href = 'success.html';
     }
@@ -363,7 +376,7 @@
 
         onApprove: function (data, actions) {
           return actions.order.capture().then(function (details) {
-            sendEntryEmail(items, total, details.id);
+            sendEntryEmail(items, total, details.id, 'PAYPAL');
             Cart.clearCart();
             window.location.href = 'success.html';
           });
