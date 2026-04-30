@@ -228,7 +228,7 @@
       if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID') return;
       if (typeof emailjs === 'undefined') return;
 
-      var feeStr  = (total === 0) ? 'Free' : ('€' + total.toFixed(2));
+      var feeStr  = (total === 0) ? 'Free' : ('EUR ' + total.toFixed(2));
       var method  = paymentMethod || 'PAYPAL';
 
       var subjectPrefix = (total === 0)
@@ -236,7 +236,7 @@
         : (method === 'MOBILEPAY' ? '[AWAITING MOBILEPAY]' : '[PAID ' + feeStr + ']');
 
       var actionNote = (total === 0)
-        ? 'No payment required — register the entry directly.'
+        ? 'No payment required - register the entry directly.'
         : (method === 'MOBILEPAY'
           ? 'ACTION REQUIRED: Check your MobilePay app to verify this payment before registering the entry.'
           : 'Payment confirmed via PayPal. Safe to register the entry.');
@@ -244,7 +244,7 @@
       var lines = items.map(function (item, i) {
         var itemFee = (item.priceEur != null && Number(item.priceEur) === 0)
           ? 'Free'
-          : '€' + (item.priceEur != null ? Number(item.priceEur) : 5).toFixed(2);
+          : 'EUR ' + (item.priceEur != null ? Number(item.priceEur) : 5).toFixed(2);
         return (
           '=== Entry ' + (i + 1) + ' of ' + items.length + ' ===\n' +
           'Competition : ' + (item.competitionName || '') + '\n' +
@@ -262,7 +262,7 @@
       emailjs.init(EMAILJS_PUBLIC_KEY);
       emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
         to_email:       'iblybibly@hotmail.com',
-        subject:        subjectPrefix + ' New entry — ' + items.length + ' class' + (items.length !== 1 ? 'es' : ''),
+        subject:        subjectPrefix + ' New entry - ' + items.length + ' class' + (items.length !== 1 ? 'es' : ''),
         payment_method: method,
         payment_ref:    paymentRef || 'n/a',
         total:          feeStr,

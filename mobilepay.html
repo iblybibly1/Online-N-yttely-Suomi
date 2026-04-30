@@ -217,13 +217,13 @@
 
     function sendEntryEmail(items, total, paymentRef, paymentMethod) {
       if (typeof emailjs === 'undefined') return;
-      var feeStr = (total === 0) ? 'Free' : ('€' + total.toFixed(2));
+      var feeStr = (total === 0) ? 'Free' : ('EUR ' + total.toFixed(2));
       var method = paymentMethod || 'MOBILEPAY';
       var actionNote = 'ACTION REQUIRED: Check your MobilePay app to verify this payment before registering the entry.';
       var lines = items.map(function (item, i) {
         var itemFee = (item.priceEur != null && Number(item.priceEur) === 0)
           ? 'Free'
-          : '€' + (item.priceEur != null ? Number(item.priceEur) : 5).toFixed(2);
+          : 'EUR ' + (item.priceEur != null ? Number(item.priceEur) : 5).toFixed(2);
         return (
           '=== Entry ' + (i + 1) + ' of ' + items.length + ' ===\n' +
           'Competition : ' + (item.competitionName || '') + '\n' +
@@ -241,7 +241,7 @@
       emailjs.init(EMAILJS_PUBLIC_KEY);
       emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
         to_email:       'iblybibly@hotmail.com',
-        subject:        '[AWAITING MOBILEPAY] New entry — ' + items.length + ' class' + (items.length !== 1 ? 'es' : ''),
+        subject:        '[AWAITING MOBILEPAY] New entry - ' + items.length + ' class' + (items.length !== 1 ? 'es' : ''),
         payment_method: method,
         payment_ref:    paymentRef || 'n/a',
         total:          feeStr,
