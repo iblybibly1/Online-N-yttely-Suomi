@@ -14,7 +14,7 @@
           "id": "best-stallion",
           "name": "Best Stallion",
           "description": "Open to entire males of any breed. Full-body side-on photo, horse standing square.",
-          "entryFee": 5,
+          "entryFee": 0,
           "maxEntries": 50,
           "winner": null,
           "entries": []
