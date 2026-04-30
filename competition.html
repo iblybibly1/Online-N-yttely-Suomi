@@ -184,7 +184,7 @@
       _currentComp = comp;
       _currentCls  = cls;
       _photoBase64 = null;
-      var fee = cls.entryFee ? '&euro;' + Number(cls.entryFee).toFixed(2) : '&euro;5.00';
+      var fee = (cls.entryFee == null) ? '&euro;5.00' : (cls.entryFee === 0 ? 'Free' : '&euro;' + Number(cls.entryFee).toFixed(2));
 
       document.getElementById('entryModalInner').innerHTML =
         '<div class="entry-modal-header">' +
@@ -328,7 +328,7 @@
         phone:           phone,
         address:         address,
         photoData:       _photoBase64,
-        priceEur:        _currentCls.entryFee ? Number(_currentCls.entryFee) : 5
+        priceEur:        (_currentCls.entryFee != null) ? Number(_currentCls.entryFee) : 5
       });
 
       document.getElementById('entryModalInner').innerHTML =
@@ -382,7 +382,7 @@
         var classesHtml = (comp.classes || []).map(function (cls) {
           var actionHtml = '';
           if (comp.status === 'open') {
-            var feeLabel = cls.entryFee ? '&euro;' + Number(cls.entryFee).toFixed(2) : '&euro;5.00';
+            var feeLabel = (cls.entryFee == null) ? '&euro;5.00' : (cls.entryFee === 0 ? 'Free' : '&euro;' + Number(cls.entryFee).toFixed(2));
             /* Pass only the class ID — avoids JSON/quote injection in onclick */
             var safeId = cls.id.replace(/'/g, '');
             actionHtml =
