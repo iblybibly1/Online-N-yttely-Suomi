@@ -219,8 +219,8 @@
       xhr.send(fd);
     }
 
-    function sendEntryEmail(items, total, paymentRef, paymentMethod) {
-      if (typeof emailjs === 'undefined') return;
+    function sendEntryEmail(items, total, paymentRef, paymentMethod, onDone) {
+      if (typeof emailjs === 'undefined') { if (onDone) onDone(); return; }
       var feeStr = (total === 0) ? 'Free' : ('EUR ' + total.toFixed(2));
       var method = paymentMethod || 'MOBILEPAY';
       var actionNote = 'ACTION REQUIRED: Check your MobilePay app to verify this payment before registering the entry.';
@@ -258,6 +258,10 @@
           action_note:    actionNote,
           entry_count:    String(items.length),
           entries:        lines
+        }).then(function () {
+          if (onDone) onDone();
+        }, function () {
+          if (onDone) onDone();
         });
       }
 
@@ -278,10 +282,11 @@
       var total = Cart.getTotal();
       if (items.length === 0) return;
       if (btn) { btn.disabled = true; btn.textContent = 'Sending…'; }
-      sendEntryEmail(items, total, 'MOBILEPAY-PENDING', 'MOBILEPAY');
-      Cart.clearCart();
-      if (btn) btn.style.display = 'none';
-      if (msg) msg.style.display = 'block';
+      sendEntryEmail(items, total, 'MOBILEPAY-PENDING', 'MOBILEPAY', function () {
+        Cart.clearCart();
+        if (btn) btn.style.display = 'none';
+        if (msg) msg.style.display = 'block';
+      });
     }
 
     function esc(str) {

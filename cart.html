@@ -228,9 +228,9 @@
       xhr.send(fd);
     }
 
-    function sendEntryEmail(items, total, paymentRef, paymentMethod) {
-      if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID') return;
-      if (typeof emailjs === 'undefined') return;
+    function sendEntryEmail(items, total, paymentRef, paymentMethod, onDone) {
+      if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID') { if (onDone) onDone(); return; }
+      if (typeof emailjs === 'undefined') { if (onDone) onDone(); return; }
 
       var feeStr  = (total === 0) ? 'Free' : ('EUR ' + total.toFixed(2));
       var method  = paymentMethod || 'PAYPAL';
@@ -278,6 +278,10 @@
           action_note:    actionNote,
           entry_count:    String(items.length),
           entries:        lines
+        }).then(function () {
+          if (onDone) onDone();
+        }, function () {
+          if (onDone) onDone();
         });
       }
 
@@ -364,10 +368,13 @@
     }
 
     function completeFreeOrder() {
+      var btn = document.querySelector('[onclick="completeFreeOrder()"]');
+      if (btn) { btn.disabled = true; btn.textContent = 'Sending...'; }
       var items = Cart.getItems();
-      sendEntryEmail(items, 0, 'FREE', 'FREE');
-      Cart.clearCart();
-      window.location.href = 'success.html';
+      sendEntryEmail(items, 0, 'FREE', 'FREE', function () {
+        Cart.clearCart();
+        window.location.href = 'success.html';
+      });
     }
 
     /* ── PayPal buttons ── */
@@ -411,9 +418,10 @@
 
         onApprove: function (data, actions) {
           return actions.order.capture().then(function (details) {
-            sendEntryEmail(items, total, details.id, 'PAYPAL');
-            Cart.clearCart();
-            window.location.href = 'success.html';
+            sendEntryEmail(items, total, details.id, 'PAYPAL', function () {
+              Cart.clearCart();
+              window.location.href = 'success.html';
+            });
           });
         },
 
