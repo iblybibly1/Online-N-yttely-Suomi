@@ -259,37 +259,16 @@
         );
       }).join('\n\n');
 
-      /* Resize all photos (max 400px) then send */
-      var photoSlots = [null, null, null, null, null];
-      var pending = Math.min(items.length, 5);
-      var done = 0;
-      function trySend() {
-        done++;
-        if (done < pending) return;
-        var payload = {
-          to_email:       'iblybibly@hotmail.com',
-          subject:        subjectPrefix + ' New entry — ' + items.length + ' class' + (items.length !== 1 ? 'es' : ''),
-          payment_method: method,
-          payment_ref:    paymentRef || 'n/a',
-          total:          feeStr,
-          action_note:    actionNote,
-          entry_count:    String(items.length),
-          entries:        lines,
-          photo_data_1:   photoSlots[0] || '',
-          photo_data_2:   photoSlots[1] || '',
-          photo_data_3:   photoSlots[2] || '',
-          photo_data_4:   photoSlots[3] || '',
-          photo_data_5:   photoSlots[4] || ''
-        };
-        emailjs.init(EMAILJS_PUBLIC_KEY);
-        emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, payload);
-      }
-      if (pending === 0) { trySend(); return; }
-      items.slice(0, 5).forEach(function (item, i) {
-        resizePhoto(item.photoData || '', 150, function (resized) {
-          photoSlots[i] = resized;
-          trySend();
-        });
+      emailjs.init(EMAILJS_PUBLIC_KEY);
+      emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
+        to_email:       'iblybibly@hotmail.com',
+        subject:        subjectPrefix + ' New entry — ' + items.length + ' class' + (items.length !== 1 ? 'es' : ''),
+        payment_method: method,
+        payment_ref:    paymentRef || 'n/a',
+        total:          feeStr,
+        action_note:    actionNote,
+        entry_count:    String(items.length),
+        entries:        lines
       });
     }
 
