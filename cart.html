@@ -209,29 +209,35 @@
     }
 
     function sendEntryEmail(items, total, paypalOrderId) {
-      if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID') return; /* not configured yet */
+      if (EMAILJS_SERVICE_ID === 'YOUR_SERVICE_ID') return;
       if (typeof emailjs === 'undefined') return;
 
+      var feeStr = (total === 0) ? 'Free' : ('€' + total.toFixed(2));
+
       var lines = items.map(function (item, i) {
+        var itemFee = (item.priceEur != null && Number(item.priceEur) === 0)
+          ? 'Free'
+          : '€' + (item.priceEur != null ? Number(item.priceEur) : 5).toFixed(2);
         return (
-          '--- Entry ' + (i + 1) + ' ---\n' +
-          'Competition: ' + (item.competitionName || '') + '\n' +
-          'Class: '       + (item.className || '') + '\n' +
-          'Name: '        + (item.riderName || '') + '\n' +
-          'Pet name: '    + (item.horseName || '') + '\n' +
-          'Pet age: '     + (item.horseAge  || '') + '\n' +
-          'Phone: '       + (item.phone     || '') + '\n' +
-          'Address: '     + (item.address   || '') + '\n' +
-          'Fee: €'   + (Number(item.priceEur) || 5).toFixed(2)
+          '=== Entry ' + (i + 1) + ' of ' + items.length + ' ===\n' +
+          'Competition : ' + (item.competitionName || '') + '\n' +
+          'Class       : ' + (item.className       || '') + '\n' +
+          'Entry fee   : ' + itemFee                       + '\n' +
+          '--- Competitor details ---\n' +
+          'Full name   : ' + (item.riderName || '') + '\n' +
+          'Pet name    : ' + (item.horseName || '') + '\n' +
+          'Pet age     : ' + (item.horseAge  || '') + '\n' +
+          'Phone       : ' + (item.phone     || '') + '\n' +
+          'Address     : ' + (item.address   || '')
         );
       }).join('\n\n');
 
       emailjs.init(EMAILJS_PUBLIC_KEY);
       emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
         to_email:    'iblybibly@hotmail.com',
-        subject:     'New entry payment — €' + total.toFixed(2) + ' (' + items.length + ' class' + (items.length !== 1 ? 'es' : '') + ')',
+        subject:     'New entry — ' + feeStr + ' — ' + items.length + ' class' + (items.length !== 1 ? 'es' : ''),
         paypal_id:   paypalOrderId || 'n/a',
-        total:       '€' + total.toFixed(2),
+        total:       feeStr,
         entry_count: String(items.length),
         entries:     lines
       });
@@ -271,7 +277,7 @@
               '<div class="cart-item-name">' + esc(item.className || 'Class entry') + '</div>' +
               '<div class="cart-item-sub">' + esc(item.competitionName || '') + '</div>' +
               '<div class="cart-item-sub">&#128062; ' + esc(item.horseName || '') + ' &middot; ' + esc(item.riderName || '') + '</div>' +
-              '<div class="cart-item-price">&euro;' + (Number(item.priceEur) || 5).toFixed(2) + '</div>' +
+              '<div class="cart-item-price">' + (item.priceEur != null && Number(item.priceEur) === 0 ? 'Free' : '&euro;' + (item.priceEur != null ? Number(item.priceEur) : 5).toFixed(2)) + '</div>' +
             '</div>' +
             '<button onclick="removeAndRefresh(\'' + esc(item.cartId) + '\')" ' +
               'style="background:none;border:none;cursor:pointer;color:var(--text-subtle);font-size:18px;padding:4px;flex-shrink:0;align-self:flex-start" ' +
@@ -284,7 +290,7 @@
         return (
           '<div class="order-line">' +
             '<span style="max-width:180px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + esc(item.className || 'Entry') + '</span>' +
-            '<span>&euro;' + (Number(item.priceEur) || 5).toFixed(2) + '</span>' +
+            '<span>' + (item.priceEur != null && Number(item.priceEur) === 0 ? 'Free' : '&euro;' + (item.priceEur != null ? Number(item.priceEur) : 5).toFixed(2)) + '</span>' +
           '</div>'
         );
       }).join('');
@@ -309,12 +315,28 @@
       renderCartPage();
     }
 
+    function completeFreeOrder() {
+      var items = Cart.getItems();
+      sendEntryEmail(items, 0, 'FREE');
+      Cart.clearCart();
+      window.location.href = 'success.html';
+    }
+
     /* ── PayPal buttons ── */
     function initPayPal(items, total) {
       var container = document.getElementById('paypal-button-container');
       if (!container || container.hasChildNodes()) return;
-      if (typeof paypal === 'undefined') { onPayPalLoadError(); return; }
       if (!items || items.length === 0) return;
+
+      /* Free-only cart: skip PayPal, send email, go to success */
+      if (total === 0) {
+        container.innerHTML =
+          '<button class="btn btn-primary btn-full" style="padding:13px;font-size:15px" onclick="completeFreeOrder()">' +
+          'Confirm free entry &rarr;</button>';
+        return;
+      }
+
+      if (typeof paypal === 'undefined') { onPayPalLoadError(); return; }
 
       paypal.Buttons({
         style: { layout: 'vertical', color: 'gold', shape: 'rect', label: 'paypal', height: 45 },
@@ -331,7 +353,7 @@
               items: items.map(function (item) {
                 return {
                   name: (item.className || 'Entry').substring(0, 127),
-                  unit_amount: { currency_code: 'EUR', value: (Number(item.priceEur) || 5).toFixed(2) },
+                  unit_amount: { currency_code: 'EUR', value: (item.priceEur != null ? Number(item.priceEur) : 5).toFixed(2) },
                   quantity: '1'
                 };
               })
