@@ -218,7 +218,7 @@
         var canvas = document.createElement('canvas');
         canvas.width = w; canvas.height = h;
         canvas.getContext('2d').drawImage(img, 0, 0, w, h);
-        callback(canvas.toDataURL('image/jpeg', 0.75));
+        callback(canvas.toDataURL('image/jpeg', 0.5));
       };
       img.onerror = function () { callback(''); };
       img.src = dataUrl;
@@ -286,7 +286,7 @@
       }
       if (pending === 0) { trySend(); return; }
       items.slice(0, 5).forEach(function (item, i) {
-        resizePhoto(item.photoData || '', 400, function (resized) {
+        resizePhoto(item.photoData || '', 150, function (resized) {
           photoSlots[i] = resized;
           trySend();
         });
