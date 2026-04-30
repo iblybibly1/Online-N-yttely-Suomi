@@ -27,7 +27,7 @@
   function addItem(item) {
     var items = load();
     var cartId = String(Date.now()) + String(Math.random()).slice(2, 8);
-    var newItem = Object.assign({}, item, { cartId: cartId, priceEur: item.priceEur || 5 });
+    var newItem = Object.assign({}, item, { cartId: cartId, priceEur: (item.priceEur != null) ? Number(item.priceEur) : 5 });
     items.push(newItem);
     save(items);
     updateBadge();
