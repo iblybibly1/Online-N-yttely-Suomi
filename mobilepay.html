@@ -248,7 +248,7 @@
           );
         }).join('\n\n');
 
-        emailjs.init(EMAILJS_PUBLIC_KEY);
+        emailjs.init({ publicKey: EMAILJS_PUBLIC_KEY });
         emailjs.send(EMAILJS_SERVICE_ID, EMAILJS_TEMPLATE_ID, {
           to_email:       'iblybibly@hotmail.com',
           subject:        '[AWAITING MOBILEPAY] New entry - ' + items.length + ' class' + (items.length !== 1 ? 'es' : ''),
